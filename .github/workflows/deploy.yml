@@ -17,6 +17,9 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
+      - name: Install workloads
+        run: dotnet workload restore FishSauceGames/FishSauceGames.csproj
+
       - name: Publish
         run: dotnet publish FishSauceGames/FishSauceGames.csproj -c Release -o publish
 
