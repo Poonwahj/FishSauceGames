@@ -13,6 +13,11 @@ publish/
 .DS_Store
 Thumbs.db
 
+# Large GIFs (too big for GitHub)
+FishSauceGames/wwwroot/images/NoTouchy.gif
+FishSauceGames/wwwroot/images/SelectingThignsInMineAwareVR1.gif
+FishSauceGames/wwwroot/images/SomeRandomClipsIntoGif.gif
+
 # NuGet
 *.nupkg
 .nuget/
