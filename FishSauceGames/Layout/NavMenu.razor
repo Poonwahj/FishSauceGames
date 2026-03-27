@@ -1,0 +1,27 @@
+<nav class="navbar">
+    <div class="navbar-inner">
+        <div class="navbar-brand">
+            <a href="/">
+                <img src="images/VectorizedLogoWithTextWhite.png" alt="Fish Sauce Games" class="navbar-logo" />
+            </a>
+        </div>
+
+        <button class="navbar-hamburger" @onclick="ToggleMenu" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="navbar-links @(menuOpen ? "open" : "")">
+            <NavLink href="/" Match="NavLinkMatch.All">Home</NavLink>
+            <NavLink href="/MineAwareVR">MineAwareVR</NavLink>
+            <NavLink href="/CountTrackula">CountTrackula</NavLink>
+        </div>
+    </div>
+</nav>
+
+@code {
+    private bool menuOpen = false;
+
+    private void ToggleMenu() => menuOpen = !menuOpen;
+}

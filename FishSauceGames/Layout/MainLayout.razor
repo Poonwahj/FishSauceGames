@@ -1,0 +1,34 @@
+@inherits LayoutComponentBase
+
+<div class="site-wrapper">
+    <NavMenu />
+    <main class="main-content">
+        @Body
+    </main>
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-column">
+                <h6>Stay updated on projects</h6>
+                <form class="subscribe-form" @onsubmit="HandleSubscribe" @onsubmit:preventDefault>
+                    <label for="subscribe-email">Email address</label>
+                    <input id="subscribe-email" type="email" placeholder="Your email address" @bind="subscribeEmail" />
+                    <button type="submit" class="btn-primary">Submit</button>
+                </form>
+            </div>
+            <div class="footer-column">
+                <h6>Contact</h6>
+                <p><a href="mailto:Justin@FishSauceGames.com">Justin@FishSauceGames.com</a></p>
+            </div>
+        </div>
+    </footer>
+</div>
+
+@code {
+    private string subscribeEmail = string.Empty;
+
+    private void HandleSubscribe()
+    {
+        // TODO: wire up email subscription
+        subscribeEmail = string.Empty;
+    }
+}

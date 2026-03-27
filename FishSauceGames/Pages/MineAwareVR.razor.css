@@ -1,0 +1,181 @@
+.cover-art {
+    width: 100%;
+}
+
+.cover-art img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.video-section {
+    padding: 3rem 2rem;
+    background-color: #1a1f2b;
+}
+
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+}
+
+.description {
+    display: flex;
+    align-items: flex-start;
+    gap: 3rem;
+    padding: 4rem 2rem;
+}
+
+.description-text {
+    flex: 1;
+}
+
+.description-text h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+.description-text p {
+    color: #c0c8d8;
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+}
+
+.description-media {
+    flex: 0 0 380px;
+}
+
+.description-media img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    display: block;
+}
+
+.experience {
+    display: flex;
+    align-items: flex-start;
+    gap: 3rem;
+    padding: 4rem 2rem;
+    background-color: #1a1f2b;
+}
+
+.experience-media {
+    flex: 0 0 480px;
+}
+
+.experience-media img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    display: block;
+}
+
+.experience-text {
+    flex: 1;
+}
+
+.experience-text h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1.25rem;
+}
+
+.experience-text p {
+    color: #c0c8d8;
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+}
+
+.developer {
+    padding: 4rem 2rem;
+}
+
+.developer h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+.developer p {
+    color: #c0c8d8;
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+    max-width: 900px;
+}
+
+.developer a {
+    color: #c0c8d8;
+    text-decoration: underline;
+}
+
+.developer a:hover {
+    color: #ffffff;
+}
+
+.privacy-policy {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    color: #ffffff;
+    font-size: 1rem;
+}
+
+.btn-outline {
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-outline:hover {
+    background-color: #ffffff;
+    color: #0d1117;
+}
+
+.ukraine {
+    padding: 4rem 2rem;
+}
+
+.ukraine h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+.ukraine p {
+    color: #c0c8d8;
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+    max-width: 900px;
+}
+
+@media (max-width: 768px) {
+    .description,
+    .experience {
+        flex-direction: column;
+        padding: 2rem 1.5rem;
+    }
+
+    .description-media,
+    .experience-media {
+        flex: none;
+        width: 100%;
+    }
+}
