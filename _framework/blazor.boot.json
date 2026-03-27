@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "FishSauceGames",
   "resources": {
-    "hash": "sha256-gFxJNhea6nd1JlAVGbEEZ3O4JxnT9hrbzZQtak/Z+Z0=",
+    "hash": "sha256-8xrXWWcTqNSFztR+me1R2jhM9q59PdGpXbMXhZvP97o=",
     "fingerprinting": {
       "Microsoft.AspNetCore.Components.zzh6yv3mvc.wasm": "Microsoft.AspNetCore.Components.wasm",
       "Microsoft.AspNetCore.Components.Web.v9hhnhenip.wasm": "Microsoft.AspNetCore.Components.Web.wasm",
@@ -29,14 +29,14 @@
       "System.Net.Primitives.xct8e9gul5.wasm": "System.Net.Primitives.wasm",
       "System.Private.Uri.x6j0vejvxh.wasm": "System.Private.Uri.wasm",
       "System.Runtime.InteropServices.JavaScript.7rrls9t1x1.wasm": "System.Runtime.InteropServices.JavaScript.wasm",
-      "System.Runtime.ie5hp6wx3o.wasm": "System.Runtime.wasm",
+      "System.Runtime.sybkxjx6oz.wasm": "System.Runtime.wasm",
       "System.Text.Encodings.Web.0bjf5lalmx.wasm": "System.Text.Encodings.Web.wasm",
       "System.Text.Json.z7xthlcn6e.wasm": "System.Text.Json.wasm",
       "System.Text.RegularExpressions.rzs960sc4e.wasm": "System.Text.RegularExpressions.wasm",
-      "System.Private.CoreLib.vcdyr67xjy.wasm": "System.Private.CoreLib.wasm",
-      "FishSauceGames.k0ba9m2n2v.wasm": "FishSauceGames.wasm",
+      "System.Private.CoreLib.cptpdhfp5n.wasm": "System.Private.CoreLib.wasm",
+      "FishSauceGames.i2t9s6y6oe.wasm": "FishSauceGames.wasm",
       "dotnet.native.b8c6fdd3r9.js": "dotnet.native.js",
-      "dotnet.native.r7iypndqhw.wasm": "dotnet.native.wasm",
+      "dotnet.native.x2clrp3qrk.wasm": "dotnet.native.wasm",
       "dotnet.js": "dotnet.js",
       "dotnet.runtime.2hocyfcbj2.js": "dotnet.runtime.js",
       "icudt_CJK.tjcz0u77k5.dat": "icudt_CJK.dat",
@@ -50,7 +50,7 @@
       "dotnet.runtime.2hocyfcbj2.js": "sha256-5oRcSUQSLbUYyq9jPgwB6domrDHYrvLX+53QxY+0y48="
     },
     "wasmNative": {
-      "dotnet.native.r7iypndqhw.wasm": "sha256-t1XViMiWvit4bXZKou2K410c+xUAzvCVlawpE8jeuCE="
+      "dotnet.native.x2clrp3qrk.wasm": "sha256-lyDoceauAAH6BLI6H3ur/5+GPDlh3RCLD73EZOhml5c="
     },
     "icu": {
       "icudt_CJK.tjcz0u77k5.dat": "sha256-SZLtQnRc0JkwqHab0VUVP7T3uBPSeYzxzDnpxPpUnHk=",
@@ -84,12 +84,12 @@
       "System.Net.Primitives.xct8e9gul5.wasm": "sha256-X6fdbe6jxWfosuYKt7tRouz9dpIN6+gpo2lz4Gz6iQM=",
       "System.Private.Uri.x6j0vejvxh.wasm": "sha256-1zfz89GXI+PhLadNrFnvWDBJ4ewiM/vqHuIfUEGU2+Y=",
       "System.Runtime.InteropServices.JavaScript.7rrls9t1x1.wasm": "sha256-PRDrwpsPI7SobhpcTmqQVvp6NAN0IQyGAz+LWmc0GdA=",
-      "System.Runtime.ie5hp6wx3o.wasm": "sha256-ZvkHhxfuivDbI4H8Z3thtHV6VJE6wWh3nydv90YZq+Y=",
+      "System.Runtime.sybkxjx6oz.wasm": "sha256-bAmfpYNZ7X6GEfAKZi9rudyRNoDeD76X9qZmS0zzT78=",
       "System.Text.Encodings.Web.0bjf5lalmx.wasm": "sha256-fIiWFFIV3rNNDMsWda4m00o68QFPHlCAPLtoWhRTftY=",
       "System.Text.Json.z7xthlcn6e.wasm": "sha256-b/KydWOmE651YtkTeCuk5YLY4vtjlcWzNszDlUsAIjY=",
       "System.Text.RegularExpressions.rzs960sc4e.wasm": "sha256-+X6yL9TRK875HtAg8u7vl57zAvcFkItJL/2UZT/RVzc=",
-      "System.Private.CoreLib.vcdyr67xjy.wasm": "sha256-4QQ503Khf17/KAUEVa/51AgT5U7H419FQPTc+lvOqZs=",
-      "FishSauceGames.k0ba9m2n2v.wasm": "sha256-RPe7lSZ106Q82c/PpV52UbRp/eV0eiwwr436oy/Y+FU="
+      "System.Private.CoreLib.cptpdhfp5n.wasm": "sha256-oKMbD0T8J7AhpruNxdQaVE+yEuu6XEfo+RKkTtmQ0Ew=",
+      "FishSauceGames.i2t9s6y6oe.wasm": "sha256-ag/aXCE3ZpM8iIS1ciYxaMkHwhgAI5z/zzIIW/kVI10="
     },
     "assembly": {}
   },
