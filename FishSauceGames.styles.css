@@ -462,6 +462,7 @@
 
 .description-media[b-22uklleg0u] {
     flex: 1;
+    min-width: 0;
 }
 
 .description-media img[b-22uklleg0u],
@@ -482,6 +483,7 @@
 
 .experience-media[b-22uklleg0u] {
     flex: 1;
+    min-width: 0;
 }
 
 .experience-media img[b-22uklleg0u],
