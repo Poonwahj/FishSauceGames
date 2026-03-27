@@ -461,10 +461,11 @@
 }
 
 .description-media[b-22uklleg0u] {
-    flex: 0 0 380px;
+    flex: 1;
 }
 
-.description-media img[b-22uklleg0u] {
+.description-media img[b-22uklleg0u],
+.description-media video[b-22uklleg0u] {
     width: 100%;
     height: auto;
     border-radius: 4px;
@@ -480,10 +481,11 @@
 }
 
 .experience-media[b-22uklleg0u] {
-    flex: 0 0 480px;
+    flex: 1;
 }
 
-.experience-media img[b-22uklleg0u] {
+.experience-media img[b-22uklleg0u],
+.experience-media video[b-22uklleg0u] {
     width: 100%;
     height: auto;
     border-radius: 4px;
