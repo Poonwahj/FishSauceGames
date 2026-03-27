@@ -20,6 +20,9 @@
                 <p><a href="mailto:Justin@FishSauceGames.com">Justin@FishSauceGames.com</a></p>
             </div>
         </div>
+        <div class="footer-version">
+            @(System.Reflection.Assembly.GetEntryAssembly()?.GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "dev")
+        </div>
     </footer>
 </div>
 

@@ -7,6 +7,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout source
@@ -21,7 +23,9 @@ jobs:
         run: dotnet workload restore FishSauceGames/FishSauceGames.csproj
 
       - name: Publish
-        run: dotnet publish FishSauceGames/FishSauceGames.csproj -c Release -o publish
+        run: |
+          VERSION=$(git rev-parse --short HEAD)-$(date +%Y%m%d)
+          dotnet publish FishSauceGames/FishSauceGames.csproj -c Release -o publish /p:InformationalVersion=$VERSION
 
       - name: Push publish output to deploy branch
         env:
@@ -40,5 +44,4 @@ jobs:
           git rm -rf . --quiet 2>/dev/null || true
           cp -r $GITHUB_WORKSPACE/publish/wwwroot/. .
           git add -A
-          git commit -m "Deploy build"
-          git push origin deploy
+          git diff --cached --quiet && echo "No changes to deploy" || (git commit -m "Deploy build" && git push origin deploy)
