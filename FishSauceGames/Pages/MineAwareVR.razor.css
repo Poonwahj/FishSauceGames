@@ -54,10 +54,11 @@
 }
 
 .description-media {
-    flex: 0 0 380px;
+    flex: 1;
 }
 
-.description-media img {
+.description-media img,
+.description-media video {
     width: 100%;
     height: auto;
     border-radius: 4px;
@@ -73,10 +74,11 @@
 }
 
 .experience-media {
-    flex: 0 0 480px;
+    flex: 1;
 }
 
-.experience-media img {
+.experience-media img,
+.experience-media video {
     width: 100%;
     height: auto;
     border-radius: 4px;
