@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "FishSauceGames",
   "resources": {
-    "hash": "sha256-ZJYvEcWEsuNtkJje6pRCFb+69CPOQ2zbccqQ0VBAeOo=",
+    "hash": "sha256-h3OVYwpddMdbcCivWttDP9T6DL2dI5aT2tzBjx0OZZM=",
     "fingerprinting": {
       "Microsoft.AspNetCore.Components.zzh6yv3mvc.wasm": "Microsoft.AspNetCore.Components.wasm",
       "Microsoft.AspNetCore.Components.Web.v9hhnhenip.wasm": "Microsoft.AspNetCore.Components.Web.wasm",
@@ -34,9 +34,9 @@
       "System.Text.Json.z7xthlcn6e.wasm": "System.Text.Json.wasm",
       "System.Text.RegularExpressions.rzs960sc4e.wasm": "System.Text.RegularExpressions.wasm",
       "System.Private.CoreLib.cptpdhfp5n.wasm": "System.Private.CoreLib.wasm",
-      "FishSauceGames.4gnt90j6yf.wasm": "FishSauceGames.wasm",
+      "FishSauceGames.v2tkqthdp7.wasm": "FishSauceGames.wasm",
       "dotnet.native.b8c6fdd3r9.js": "dotnet.native.js",
-      "dotnet.native.gk32roxjo9.wasm": "dotnet.native.wasm",
+      "dotnet.native.2vxws9mz1v.wasm": "dotnet.native.wasm",
       "dotnet.js": "dotnet.js",
       "dotnet.runtime.2hocyfcbj2.js": "dotnet.runtime.js",
       "icudt_CJK.tjcz0u77k5.dat": "icudt_CJK.dat",
@@ -50,7 +50,7 @@
       "dotnet.runtime.2hocyfcbj2.js": "sha256-5oRcSUQSLbUYyq9jPgwB6domrDHYrvLX+53QxY+0y48="
     },
     "wasmNative": {
-      "dotnet.native.gk32roxjo9.wasm": "sha256-cFaPaC8xSAy/9kuWMCjYSfMsjGzUMTokWB3WIxp5tY8="
+      "dotnet.native.2vxws9mz1v.wasm": "sha256-kgygHgEbtcSni5a7IhUoFGUtI6RIRebg61rSMg95IL4="
     },
     "icu": {
       "icudt_CJK.tjcz0u77k5.dat": "sha256-SZLtQnRc0JkwqHab0VUVP7T3uBPSeYzxzDnpxPpUnHk=",
@@ -89,7 +89,7 @@
       "System.Text.Json.z7xthlcn6e.wasm": "sha256-b/KydWOmE651YtkTeCuk5YLY4vtjlcWzNszDlUsAIjY=",
       "System.Text.RegularExpressions.rzs960sc4e.wasm": "sha256-+X6yL9TRK875HtAg8u7vl57zAvcFkItJL/2UZT/RVzc=",
       "System.Private.CoreLib.cptpdhfp5n.wasm": "sha256-oKMbD0T8J7AhpruNxdQaVE+yEuu6XEfo+RKkTtmQ0Ew=",
-      "FishSauceGames.4gnt90j6yf.wasm": "sha256-9HStJ3ehMsJsdfgP+p8tJkiiW1s8pq1TV3Pj/2YWAEk="
+      "FishSauceGames.v2tkqthdp7.wasm": "sha256-Nw4cw7S1OLpIce+ZsahLyzr4d/SxWATUlMQKA+COuOM="
     },
     "assembly": {}
   },
