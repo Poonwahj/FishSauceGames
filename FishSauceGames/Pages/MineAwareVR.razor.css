@@ -59,10 +59,19 @@
     min-width: 0;
 }
 
+.video-placeholder {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: #2a3040;
+    border: 2px dashed #445;
+    border-radius: 4px;
+}
+
 .description-media img,
 .description-media video {
     width: 100%;
-    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
     border-radius: 4px;
     display: block;
 }
@@ -83,7 +92,8 @@
 .experience-media img,
 .experience-media video {
     width: 100%;
-    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
     border-radius: 4px;
     display: block;
 }

@@ -36,6 +36,21 @@
     overflow: hidden;
 }
 
+.hero-media video {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+}
+
+.video-placeholder {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: #2a3040;
+    border: 2px dashed #445;
+    border-radius: 4px;
+}
+
 .hero-media img {
     width: 100%;
     height: auto;

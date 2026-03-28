@@ -1,4 +1,5 @@
 @page "/"
+@inject IWebAssemblyHostEnvironment HostEnv
 
 <PageTitle>Fish Sauce Games</PageTitle>
 
@@ -10,9 +11,16 @@
     </div>
     <div class="hero-media">
         <!-- Drop your hero image or gif here: wwwroot/images/hero.gif -->
-        <video autoplay loop muted playsinline preload="metadata">
-            <source src="images/MineAwareGeneral.webm" type="video/webm" />
-        </video>
+        @if (HostEnv.IsDevelopment())
+        {
+            <div class="video-placeholder"></div>
+        }
+        else
+        {
+            <video autoplay loop muted playsinline preload="metadata">
+                <source src="images/MineAwareGeneral.webm" type="video/webm" />
+            </video>
+        }
     </div>
 </section>
 
