@@ -1,0 +1,137 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Fish Sauce Games">
+  <section class="hero">
+    <div class="hero-text">
+      <h1>The Sauce</h1>
+      <p>We're an indie game studio building VR games, first person games, and helpful apps!</p>
+      <a href="/MineAwareVR" class="btn-primary">Explore</a>
+    </div>
+    <div class="hero-media">
+      <video autoplay loop muted playsinline preload="metadata">
+        <source src="/images/MineAwareGeneral.webm" type="video/webm" />
+      </video>
+    </div>
+  </section>
+
+  <section class="platforms">
+    <div class="platforms-text">
+      <h2>Our Platforms</h2>
+      <p>We're focused on building games for the Meta Quest 2/3/pro and PC in Unity 6.</p>
+      <p>We build apps for Windows and Android</p>
+      <a href="/MineAwareVR" class="btn-primary">Explore</a>
+    </div>
+    <div class="hero-media">
+      <img src="/images/UsingUnity.png" alt="Unity development" onerror="this.style.display='none'" />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    display: flex;
+    align-items: center;
+    min-height: calc(100vh - 90px);
+    padding: 0 2rem;
+    gap: 3rem;
+  }
+
+  .hero-text {
+    flex: 0 0 auto;
+    max-width: 420px;
+  }
+
+  .hero-text h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+
+  .hero-text p {
+    font-size: 1rem;
+    color: #c0c8d8;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  .hero-media {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    background-color: #000000;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .hero-media video,
+  .hero-media img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+  }
+
+  .platforms {
+    display: flex;
+    align-items: center;
+    min-height: 600px;
+    padding: 4rem 2rem;
+    gap: 3rem;
+  }
+
+  .platforms-text {
+    flex: 0 0 auto;
+    max-width: 420px;
+  }
+
+  .platforms-text h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1.25rem;
+  }
+
+  .platforms-text p {
+    font-size: 1rem;
+    color: #c0c8d8;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+
+  .platforms-text p:last-of-type {
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+      min-height: auto;
+    }
+
+    .hero-text {
+      max-width: 100%;
+    }
+
+    .hero-text h1 {
+      font-size: 2.5rem;
+    }
+
+    .hero-media {
+      width: 100%;
+    }
+
+    .platforms {
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+      min-height: auto;
+    }
+
+    .platforms-text {
+      max-width: 100%;
+    }
+  }
+</style>

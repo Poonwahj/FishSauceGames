@@ -1,0 +1,7 @@
+AddType application/wasm .wasm
+
+RewriteEngine On
+RewriteBase /
+
+# Let the CountTrackula PWA handle its own paths
+RewriteRule ^CountTrackula/App - [L]
