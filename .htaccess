@@ -5,12 +5,3 @@ RewriteBase /
 
 # Let the CountTrackula PWA handle its own paths
 RewriteRule ^CountTrackula/App - [L]
-
-# Don't rewrite index.html itself
-RewriteRule ^index\.html$ - [L]
-
-# Serve actual files directly
-RewriteCond %{REQUEST_FILENAME} !-f
-
-# Rewrite everything else (including directories) to Blazor's index.html
-RewriteRule . /index.html [L]
