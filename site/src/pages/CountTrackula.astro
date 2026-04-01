@@ -22,6 +22,12 @@ import Layout from '../layouts/Layout.astro';
     <p>This app was built to track fitness, nutrition, habit, and health markers. Easily export to json for consumption by an LLM of your choice (They all read Json)</p>
     <p>This app integrates with your google drive so it can synchronize between devices. Install it on your phone, use it on your desktop, supports offline and manual sync as well.</p>
   </section>
+
+  <section class="legal-links">
+    <a href="/CountTrackula/PrivacyPolicy">Privacy Policy</a>
+    <span class="divider">·</span>
+    <a href="/CountTrackula/termsofservice">Terms of Service</a>
+  </section>
 </Layout>
 
 <style>
@@ -84,6 +90,26 @@ import Layout from '../layouts/Layout.astro';
   .track-everything p {
     color: #c0c8d8;
     line-height: 1.7;
+  }
+
+  .legal-links {
+    padding: 2rem 2rem 4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .legal-links a {
+    color: #6b7a99;
+  }
+
+  .legal-links a:hover {
+    color: #c0c8d8;
+  }
+
+  .divider {
+    color: #3a4458;
   }
 
   @media (max-width: 768px) {
