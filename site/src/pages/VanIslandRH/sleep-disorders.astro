@@ -1,0 +1,98 @@
+---
+import MedicalLayout from '../../layouts/MedicalLayout.astro';
+---
+<MedicalLayout title="Sleep Disorders — Vancouver Island Respirology">
+  <div class="page-content">
+    <div class="page-header">
+      <a href="/VanIslandRH" class="back-link">← Back to Home</a>
+      <h1>Sleep Breathing Disorders</h1>
+      <p class="lead">Sleep breathing disorders, including obstructive and central sleep apnea, are common conditions that cause repeated interruptions to breathing during sleep, leading to poor sleep quality and serious health consequences.</p>
+    </div>
+
+    <div class="content-grid">
+      <article class="main-content">
+        <h2>Obstructive Sleep Apnea (OSA)</h2>
+        <p>OSA is the most common sleep breathing disorder. It occurs when the muscles in the throat relax during sleep, causing the upper airway to collapse and block airflow repeatedly throughout the night. Each episode causes a brief arousal from sleep, often without the patient's awareness.</p>
+        <p>OSA affects an estimated 1 in 4 adults to some degree. Risk factors include obesity, male sex, age, large neck circumference, and anatomical features such as a recessed jaw or enlarged tonsils.</p>
+
+        <h2>Central Sleep Apnea (CSA)</h2>
+        <p>CSA differs from OSA in that the airway remains open but the brain fails to send appropriate signals to the breathing muscles. It is less common than OSA and is often associated with heart failure, stroke, or opioid use. Treatment differs significantly from OSA.</p>
+
+        <h2>Symptoms</h2>
+        <ul>
+          <li>Loud snoring (often reported by a partner)</li>
+          <li>Witnessed pauses in breathing during sleep</li>
+          <li>Gasping or choking during sleep</li>
+          <li>Excessive daytime sleepiness</li>
+          <li>Morning headaches</li>
+          <li>Poor concentration and memory</li>
+          <li>Irritability and mood changes</li>
+          <li>Nocturia (frequent nighttime urination)</li>
+        </ul>
+
+        <h2>Health Consequences</h2>
+        <p>Untreated sleep apnea is associated with significantly increased risks of:</p>
+        <ul>
+          <li>High blood pressure (hypertension)</li>
+          <li>Heart disease and atrial fibrillation</li>
+          <li>Stroke</li>
+          <li>Type 2 diabetes</li>
+          <li>Motor vehicle accidents due to drowsiness</li>
+        </ul>
+
+        <h2>Diagnosis</h2>
+        <p>Sleep apnea is diagnosed with a sleep study. Home sleep apnea testing (HSAT) is appropriate for most patients with moderate-to-high pre-test probability of OSA. In-lab polysomnography (PSG) is used for complex cases, patients with suspected CSA, or when home testing results are inconclusive.</p>
+
+        <h2>Treatment</h2>
+        <ul>
+          <li><strong>CPAP (Continuous Positive Airway Pressure):</strong> The gold standard treatment for OSA — delivers pressurized air through a mask to keep the airway open during sleep.</li>
+          <li><strong>Mandibular advancement devices:</strong> Custom dental appliances for mild-to-moderate OSA.</li>
+          <li><strong>Weight loss:</strong> Can significantly reduce OSA severity in overweight patients.</li>
+          <li><strong>Positional therapy:</strong> For patients whose apnea is predominantly position-dependent.</li>
+          <li><strong>ASV / BiPAP:</strong> For central or complex sleep apnea.</li>
+        </ul>
+      </article>
+
+      <aside class="sidebar">
+        <div class="sidebar-card">
+          <h3>Key Facts</h3>
+          <ul>
+            <li>Affects ~1 in 4 adults</li>
+            <li>Often undiagnosed for years</li>
+            <li>CPAP is highly effective for OSA</li>
+            <li>Increases cardiovascular risk if untreated</li>
+          </ul>
+        </div>
+        <div class="sidebar-card cta">
+          <h3>Need a Referral?</h3>
+          <p>Ask your family doctor for a referral to Dr. Han Sen Phang.</p>
+          <a href="/VanIslandRH/contact" class="btn-sm">Contact Info →</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</MedicalLayout>
+
+<style>
+  .page-content { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  .back-link { font-size: 0.875rem; color: #6b7280; text-decoration: none; display: inline-block; margin-bottom: 1rem; }
+  .back-link:hover { color: #0369a1; }
+  .page-header { border-bottom: 1px solid #e5e7eb; padding-bottom: 1.5rem; margin-bottom: 2.5rem; }
+  .page-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; }
+  .lead { font-size: 1.1rem; color: #4b5563; line-height: 1.7; max-width: 760px; }
+  .content-grid { display: grid; grid-template-columns: 1fr 280px; gap: 3rem; align-items: start; }
+  .main-content h2 { font-size: 1.4rem; font-weight: 700; margin: 2rem 0 0.75rem; color: #0369a1; border-bottom: 2px solid #e0f2fe; padding-bottom: 0.4rem; }
+  .main-content h2:first-child { margin-top: 0; }
+  .main-content p { line-height: 1.75; color: #374151; }
+  .main-content ul { padding-left: 1.4rem; line-height: 1.8; color: #374151; }
+  .main-content li { margin-bottom: 0.3rem; }
+  .sidebar { display: flex; flex-direction: column; gap: 1.25rem; }
+  .sidebar-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.25rem; }
+  .sidebar-card h3 { font-weight: 700; color: #0369a1; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8rem; }
+  .sidebar-card ul { padding-left: 1.1rem; margin: 0; font-size: 0.9rem; line-height: 1.8; }
+  .sidebar-card.cta { background: #f0f9ff; border-color: #bae6fd; }
+  .sidebar-card.cta p { font-size: 0.9rem; margin-bottom: 1rem; }
+  .btn-sm { display: inline-block; background: #0369a1; color: #ffffff; padding: 0.5rem 1.25rem; border-radius: 5px; font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: background-color 0.2s; }
+  .btn-sm:hover { background: #0284c7; color: #ffffff; }
+  @media (max-width: 768px) { .content-grid { grid-template-columns: 1fr; } .page-header h1 { font-size: 1.875rem; } }
+</style>

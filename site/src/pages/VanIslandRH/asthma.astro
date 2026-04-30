@@ -1,0 +1,191 @@
+---
+import MedicalLayout from '../../layouts/MedicalLayout.astro';
+---
+<MedicalLayout title="Asthma — Vancouver Island Respirology">
+  <div class="page-content">
+    <div class="page-header">
+      <a href="/VanIslandRH" class="back-link">← Back to Home</a>
+      <h1>Asthma</h1>
+      <p class="lead">Asthma is a chronic inflammatory disease of the airways affecting approximately 10% of the population. With proper diagnosis and management, most people with asthma can lead full, active lives.</p>
+    </div>
+
+    <div class="content-grid">
+      <article class="main-content">
+        <h2>What is Asthma?</h2>
+        <p>Asthma causes the airways to become inflamed and narrowed, leading to recurring episodes of wheezing, breathlessness, chest tightness, and coughing. These symptoms are often worse at night or early morning and can be triggered by various factors.</p>
+        <p>The underlying cause is a combination of airway inflammation and bronchospasm — the muscles surrounding the airways tighten in response to triggers. This is usually reversible, either spontaneously or with treatment, which distinguishes asthma from conditions like COPD.</p>
+
+        <h2>Common Triggers</h2>
+        <ul>
+          <li>Respiratory infections (colds, flu)</li>
+          <li>Allergens (pollen, dust mites, pet dander, mould)</li>
+          <li>Exercise, especially in cold dry air</li>
+          <li>Air pollution, smoke, and strong odours</li>
+          <li>Occupational exposures (dust, chemicals, fumes)</li>
+          <li>Cold air and weather changes</li>
+          <li>Stress and strong emotions</li>
+          <li>Certain medications (aspirin, NSAIDs, beta-blockers)</li>
+        </ul>
+
+        <h2>Diagnosis</h2>
+        <p>Diagnosis typically involves a combination of medical history, physical examination, and breathing tests. Spirometry is the cornerstone of asthma diagnosis — it measures how much air you can breathe out and how quickly. A significant improvement in airflow after a bronchodilator (reversibility) supports an asthma diagnosis.</p>
+        <p>In cases where spirometry is normal, a methacholine challenge test may be used to assess airway hyperresponsiveness, a hallmark of asthma.</p>
+
+        <h2>Treatment &amp; Management</h2>
+        <p>Asthma management follows a stepwise approach guided by symptom control:</p>
+        <ul>
+          <li><strong>Reliever inhalers (SABAs):</strong> Short-acting bronchodilators used for quick symptom relief during flare-ups.</li>
+          <li><strong>Controller inhalers (ICS):</strong> Inhaled corticosteroids reduce airway inflammation and are the most effective long-term treatment.</li>
+          <li><strong>Combination inhalers (ICS/LABA):</strong> For moderate to severe asthma requiring additional control.</li>
+          <li><strong>Trigger avoidance:</strong> Identifying and minimizing exposure to personal triggers.</li>
+          <li><strong>Biologic therapies:</strong> For severe, difficult-to-control asthma.</li>
+        </ul>
+
+        <h2>When to Seek Help</h2>
+        <p>Seek urgent medical attention if you experience severe breathlessness, can barely speak, your reliever inhaler is not helping, or your lips or fingernails appear blue. An asthma action plan developed with your physician is essential for managing flare-ups safely at home.</p>
+      </article>
+
+      <aside class="sidebar">
+        <div class="sidebar-card">
+          <h3>Key Facts</h3>
+          <ul>
+            <li>Affects ~10% of Canadians</li>
+            <li>Most common chronic disease in children</li>
+            <li>Usually controllable with treatment</li>
+            <li>Proper inhaler technique is critical</li>
+          </ul>
+        </div>
+        <div class="sidebar-card">
+          <h3>Related Services</h3>
+          <ul>
+            <li><a href="/VanIslandRH/services#spirometry">Spirometry</a></li>
+            <li><a href="/VanIslandRH/services#methacholine">Methacholine Challenge</a></li>
+            <li><a href="/VanIslandRH/services#inhalers">Inhaler Education</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-card cta">
+          <h3>Need a Referral?</h3>
+          <p>Ask your family doctor for a referral to Dr. Han Sen Phang.</p>
+          <a href="/VanIslandRH/contact" class="btn-sm">Contact Info →</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</MedicalLayout>
+
+<style>
+  .page-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  .back-link {
+    font-size: 0.875rem;
+    color: #6b7280;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  .back-link:hover { color: #0369a1; }
+
+  .page-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+  }
+
+  .lead {
+    font-size: 1.1rem;
+    color: #4b5563;
+    line-height: 1.7;
+    max-width: 760px;
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .main-content h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 2rem 0 0.75rem;
+    color: #0369a1;
+    border-bottom: 2px solid #e0f2fe;
+    padding-bottom: 0.4rem;
+  }
+
+  .main-content h2:first-child { margin-top: 0; }
+
+  .main-content p { line-height: 1.75; color: #374151; }
+
+  .main-content ul {
+    padding-left: 1.4rem;
+    line-height: 1.8;
+    color: #374151;
+  }
+
+  .main-content li { margin-bottom: 0.3rem; }
+
+  .sidebar { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .sidebar-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  .sidebar-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0369a1;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.8rem;
+  }
+
+  .sidebar-card ul {
+    padding-left: 1.1rem;
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+
+  .sidebar-card.cta {
+    background: #f0f9ff;
+    border-color: #bae6fd;
+  }
+
+  .sidebar-card.cta p { font-size: 0.9rem; margin-bottom: 1rem; }
+
+  .btn-sm {
+    display: inline-block;
+    background: #0369a1;
+    color: #ffffff;
+    padding: 0.5rem 1.25rem;
+    border-radius: 5px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+
+  .btn-sm:hover { background: #0284c7; color: #ffffff; }
+
+  @media (max-width: 768px) {
+    .content-grid { grid-template-columns: 1fr; }
+    .page-header h1 { font-size: 1.875rem; }
+  }
+</style>

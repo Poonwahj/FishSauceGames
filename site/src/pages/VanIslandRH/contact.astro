@@ -1,0 +1,172 @@
+---
+import MedicalLayout from '../../layouts/MedicalLayout.astro';
+---
+<MedicalLayout title="Contact — Vancouver Island Respirology">
+  <div class="page-content">
+    <div class="page-header">
+      <a href="/VanIslandRH" class="back-link">← Back to Home</a>
+      <h1>Contact &amp; Referrals</h1>
+      <p class="lead">Dr. Phang accepts referrals from family physicians and other specialists. Patients are seen by referral only. Please contact the clinic directly for referral information.</p>
+    </div>
+
+    <div class="contact-grid">
+      <div class="contact-main">
+        <div class="contact-card primary">
+          <h2>Dr. Han Sen Phang</h2>
+          <p class="role">Respirologist · FRCPC</p>
+          <div class="contact-detail">
+            <span class="label">Clinic Address</span>
+            <address>
+              Suite 309 — 1990 Fort Street<br />
+              Victoria, BC V8R 6V4
+            </address>
+          </div>
+          <div class="contact-detail">
+            <span class="label">Phone</span>
+            <a href="tel:2503830250">250-383-0250</a>
+          </div>
+          <div class="contact-detail">
+            <span class="label">Hospital Affiliation</span>
+            <span>Royal Jubilee Hospital, Victoria, BC</span>
+          </div>
+        </div>
+
+        <div class="contact-card secondary">
+          <h2>PFT Laboratory</h2>
+          <p>Pulmonary function tests are performed at Royal Jubilee Hospital.</p>
+          <div class="contact-detail">
+            <span class="label">Address</span>
+            <address>
+              Royal Jubilee Hospital<br />
+              1952 Bay Street, Royal Block, 4th Floor<br />
+              Victoria, BC V8R 1J8
+            </address>
+          </div>
+          <div class="contact-detail">
+            <span class="label">Phone</span>
+            <a href="tel:2505191642">250-519-1642</a>
+          </div>
+          <div class="contact-detail">
+            <span class="label">Fax</span>
+            <span>250-519-1552</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="contact-sidebar">
+        <div class="info-card">
+          <h3>For Referring Physicians</h3>
+          <p>Please fax or phone referrals directly to the clinic. Include relevant history, investigations (spirometry, chest imaging), current medications, and reason for referral.</p>
+          <p>Urgent referrals may be discussed by phone.</p>
+        </div>
+        <div class="info-card">
+          <h3>For Patients</h3>
+          <p>Dr. Phang's practice is by referral from your family doctor or specialist. If you have respiratory concerns, please speak with your primary care provider who can arrange a referral.</p>
+        </div>
+        <div class="info-card disclaimer">
+          <p>This website is intended to supplement, not replace, care from your healthcare team. In an emergency, call 911 or go to your nearest emergency department.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</MedicalLayout>
+
+<style>
+  .page-content { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  .back-link { font-size: 0.875rem; color: #6b7280; text-decoration: none; display: inline-block; margin-bottom: 1rem; }
+  .back-link:hover { color: #0369a1; }
+  .page-header { border-bottom: 1px solid #e5e7eb; padding-bottom: 1.5rem; margin-bottom: 2.5rem; }
+  .page-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; }
+  .lead { font-size: 1.1rem; color: #4b5563; line-height: 1.7; max-width: 760px; }
+
+  .contact-grid { display: grid; grid-template-columns: 1fr 300px; gap: 2rem; align-items: start; }
+
+  .contact-main { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .contact-card {
+    border-radius: 12px;
+    padding: 2rem;
+  }
+
+  .contact-card.primary {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+  }
+
+  .contact-card.secondary {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+  }
+
+  .contact-card h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: #0c1a2e;
+  }
+
+  .role {
+    font-size: 0.9rem;
+    color: #0369a1;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .contact-detail:last-child { margin-bottom: 0; }
+
+  .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6b7280;
+  }
+
+  .contact-detail address, .contact-detail span, .contact-detail a {
+    font-style: normal;
+    font-size: 1rem;
+    color: #1f2937;
+    line-height: 1.6;
+  }
+
+  .contact-detail a { color: #0369a1; }
+  .contact-detail a:hover { color: #0284c7; }
+
+  .contact-sidebar { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .info-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  .info-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0369a1;
+    margin-bottom: 0.75rem;
+  }
+
+  .info-card p { font-size: 0.875rem; color: #4b5563; line-height: 1.6; margin-bottom: 0.5rem; }
+  .info-card p:last-child { margin-bottom: 0; }
+
+  .info-card.disclaimer {
+    background: #fffbeb;
+    border-color: #fde68a;
+  }
+
+  .info-card.disclaimer p { color: #92400e; font-size: 0.8rem; font-style: italic; }
+
+  @media (max-width: 768px) {
+    .contact-grid { grid-template-columns: 1fr; }
+    .page-header h1 { font-size: 1.875rem; }
+  }
+</style>

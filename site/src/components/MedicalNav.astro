@@ -1,0 +1,155 @@
+---
+const path = Astro.url.pathname;
+const base = '/VanIslandRH';
+
+const links = [
+  { href: base, label: 'Home' },
+  { href: `${base}/asthma`, label: 'Asthma' },
+  { href: `${base}/copd`, label: 'COPD' },
+  { href: `${base}/sleep-disorders`, label: 'Sleep' },
+  { href: `${base}/pulmonary-fibrosis`, label: 'Pulmonary Fibrosis' },
+  { href: `${base}/pleural-effusions`, label: 'Pleural Effusions' },
+  { href: `${base}/services`, label: 'Services' },
+  { href: `${base}/contact`, label: 'Contact' },
+];
+
+function isActive(href: string) {
+  if (href === base) return path === base || path === base + '/';
+  return path.startsWith(href);
+}
+---
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/VanIslandRH" class="nav-brand">
+      <span class="nav-brand-name">Dr. Han Sen Phang</span>
+      <span class="nav-brand-sub">Respirologist · Victoria, BC</span>
+    </a>
+    <button class="nav-hamburger" id="med-hamburger" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="med-nav-links">
+      {links.map(link => (
+        <a href={link.href} class={isActive(link.href) ? 'active' : ''}>{link.label}</a>
+      ))}
+    </div>
+  </div>
+</nav>
+
+<script>
+  const hamburger = document.getElementById('med-hamburger');
+  const links = document.getElementById('med-nav-links');
+  hamburger?.addEventListener('click', () => links?.classList.toggle('open'));
+</script>
+
+<style>
+  .nav {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    gap: 2rem;
+  }
+
+  .nav-brand {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    padding: 0.75rem 0;
+    flex-shrink: 0;
+  }
+
+  .nav-brand-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.2;
+  }
+
+  .nav-brand-sub {
+    font-size: 0.75rem;
+    color: #6b7280;
+    line-height: 1.2;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: auto;
+    flex-wrap: wrap;
+  }
+
+  .nav-links a {
+    color: #374151;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.4rem 0.65rem;
+    border-radius: 4px;
+    transition: background-color 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+
+  .nav-links a:hover {
+    background-color: #f0f9ff;
+    color: #0369a1;
+  }
+
+  .nav-links a.active {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    font-weight: 600;
+  }
+
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.4rem;
+    margin-left: auto;
+  }
+
+  .nav-hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background-color: #374151;
+    border-radius: 2px;
+  }
+
+  @media (max-width: 900px) {
+    .nav-hamburger { display: flex; }
+
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-top: 1px solid #e5e7eb;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0.75rem 1.5rem 1rem;
+      gap: 0.25rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+    }
+
+    .nav-links.open { display: flex; }
+
+    .nav-links a { width: 100%; }
+  }
+</style>

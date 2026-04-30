@@ -1,0 +1,160 @@
+---
+import MedicalLayout from '../../layouts/MedicalLayout.astro';
+
+const services = [
+  {
+    id: 'spirometry',
+    title: 'Spirometry',
+    desc: 'Spirometry is the most common pulmonary function test. You breathe into a mouthpiece connected to a spirometer, which measures how much air you can inhale and exhale, and how quickly. It is essential for diagnosing and monitoring asthma, COPD, and other lung conditions.',
+    details: ['FEV1 and FVC measurement', 'Bronchodilator reversibility testing', 'Results interpreted against age/sex/height norms', 'Takes approximately 20–30 minutes'],
+  },
+  {
+    id: 'pft',
+    title: 'Full Pulmonary Function Tests',
+    desc: 'A complete PFT battery goes beyond spirometry to measure lung volumes, diffusion capacity (DLCO), and airway resistance. This provides a comprehensive picture of lung function for complex or unclear diagnoses.',
+    details: ['Body plethysmography (lung volumes)', 'DLCO (gas transfer / diffusion)', 'Airway resistance (Raw)', 'Available at Royal Jubilee Hospital PFT Lab'],
+  },
+  {
+    id: 'methacholine',
+    title: 'Methacholine Challenge',
+    desc: 'When spirometry is normal but asthma is suspected, a methacholine challenge test can detect airway hyperresponsiveness. You inhale increasing concentrations of methacholine while spirometry is repeated to identify the threshold at which airflow decreases.',
+    details: ['Performed when baseline spirometry is normal', 'Identifies airway hyperresponsiveness', 'High negative predictive value for asthma', 'Supervised by trained staff'],
+  },
+  {
+    id: 'imaging',
+    title: 'Lung Imaging',
+    desc: 'Various imaging modalities provide complementary information about lung structure and disease.',
+    details: ['Chest X-ray: initial evaluation of infection, effusion, masses', 'High-resolution CT (HRCT): ILD, emphysema, bronchiectasis', 'CT-guided lung biopsy: tissue sampling for suspected malignancy or ILD', 'PET/CT: staging of lung cancer'],
+  },
+  {
+    id: 'bronchoscopy',
+    title: 'Bronchoscopy',
+    desc: 'Flexible bronchoscopy involves passing a thin, flexible scope through the nose or mouth into the airways to visualize the bronchial tree, collect samples, and perform therapeutic procedures.',
+    details: ['Bronchoalveolar lavage (BAL) for infection and ILD', 'Endobronchial biopsies', 'EBUS (Endobronchial Ultrasound): staging lung cancer and sampling lymph nodes', 'Performed under sedation'],
+  },
+  {
+    id: 'inhalers',
+    title: 'Inhaler Education',
+    desc: 'Correct inhaler technique is essential for effective medication delivery. Studies show that up to 70–80% of patients use their inhalers incorrectly. We provide hands-on education for all inhaler device types.',
+    details: ['Metered dose inhalers (MDI) with spacer', 'Turbuhaler® (Pulmicort, Symbicort)', 'Respimat® soft mist inhalers', 'Ellipta® and Breezhaler® devices'],
+  },
+  {
+    id: 'airway-clearance',
+    title: 'Airway Clearance',
+    desc: 'Airway clearance techniques help mobilize and clear mucus from the airways. These are particularly important for patients with bronchiectasis, cystic fibrosis, or COPD with excessive mucus production.',
+    details: ['Active cycle of breathing techniques (ACBT)', 'Oscillating positive expiratory pressure (OPEP) devices', 'Autogenic drainage', 'Postural drainage and percussion'],
+  },
+];
+---
+<MedicalLayout title="Services — Vancouver Island Respirology">
+  <div class="page-content">
+    <div class="page-header">
+      <a href="/VanIslandRH" class="back-link">← Back to Home</a>
+      <h1>Diagnostic &amp; Clinical Services</h1>
+      <p class="lead">Comprehensive pulmonary diagnostic services available through Dr. Phang's clinic and the Royal Jubilee Hospital PFT Laboratory.</p>
+    </div>
+
+    <div class="services-list">
+      {services.map(s => (
+        <div class="service-card" id={s.id}>
+          <div class="service-body">
+            <h2>{s.title}</h2>
+            <p>{s.desc}</p>
+          </div>
+          <ul class="service-details">
+            {s.details.map(d => <li>{d}</li>)}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <div class="pft-location">
+      <h2>PFT Lab Location</h2>
+      <p>Pulmonary Function Tests are performed at:</p>
+      <div class="location-card">
+        <strong>Royal Jubilee Hospital — PFT Lab</strong><br />
+        1952 Bay Street, Royal Block, 4th Floor<br />
+        Victoria, BC V8R 1J8<br />
+        Phone: <a href="tel:2505191642">250-519-1642</a> · Fax: 250-519-1552
+      </div>
+    </div>
+  </div>
+</MedicalLayout>
+
+<style>
+  .page-content { max-width: 1200px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  .back-link { font-size: 0.875rem; color: #6b7280; text-decoration: none; display: inline-block; margin-bottom: 1rem; }
+  .back-link:hover { color: #0369a1; }
+  .page-header { border-bottom: 1px solid #e5e7eb; padding-bottom: 1.5rem; margin-bottom: 2.5rem; }
+  .page-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem; }
+  .lead { font-size: 1.1rem; color: #4b5563; line-height: 1.7; max-width: 760px; }
+
+  .services-list { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 3rem; }
+
+  .service-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #0369a1;
+    border-radius: 10px;
+    padding: 1.75rem;
+    align-items: start;
+  }
+
+  .service-body h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0369a1;
+    margin-bottom: 0.75rem;
+  }
+
+  .service-body p { font-size: 0.95rem; line-height: 1.7; color: #374151; margin: 0; }
+
+  .service-details {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .service-details li {
+    font-size: 0.9rem;
+    color: #4b5563;
+    padding: 0.35rem 0 0.35rem 1.25rem;
+    position: relative;
+    border-bottom: 1px solid #e5e7eb;
+    line-height: 1.5;
+  }
+
+  .service-details li:last-child { border-bottom: none; }
+
+  .service-details li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #0369a1;
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+
+  .pft-location { margin-top: 1rem; }
+  .pft-location h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .pft-location p { color: #6b7280; margin-bottom: 1rem; }
+
+  .location-card {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 10px;
+    padding: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #374151;
+    max-width: 480px;
+  }
+
+  @media (max-width: 768px) {
+    .service-card { grid-template-columns: 1fr; gap: 1rem; }
+    .page-header h1 { font-size: 1.875rem; }
+  }
+</style>
