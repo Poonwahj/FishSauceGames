@@ -1,0 +1,180 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="MineAware - SESU - Fish Sauce Games">
+  <section class="results">
+    <h1>MineAware - SESU</h1>
+
+    <div id="status">Loading results&hellip;</div>
+    <div id="table-wrapper"></div>
+
+    <div class="pagination">
+      <button id="prevBtn" class="btn-outline" disabled>Previous</button>
+      <span id="pageLabel"></span>
+      <button id="nextBtn" class="btn-outline" disabled>Next</button>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import {
+    collection,
+    query,
+    orderBy,
+    limit,
+    startAfter,
+    getDocs,
+    Timestamp,
+    type QueryDocumentSnapshot,
+    type DocumentData,
+  } from 'firebase/firestore';
+  import { db } from '../lib/firebase';
+
+  const COLLECTION_NAME = 'MATrainingSessions';
+  const PAGE_SIZE = 10;
+
+  const statusEl = document.getElementById('status')!;
+  const tableWrapperEl = document.getElementById('table-wrapper')!;
+  const prevBtn = document.getElementById('prevBtn') as HTMLButtonElement;
+  const nextBtn = document.getElementById('nextBtn') as HTMLButtonElement;
+  const pageLabelEl = document.getElementById('pageLabel')!;
+
+  // pageStartCursors[n] is the "startAfter" cursor used to fetch page n.
+  // pageStartCursors[0] is undefined (first page has no cursor).
+  const pageStartCursors: (QueryDocumentSnapshot<DocumentData> | undefined)[] = [undefined];
+  let currentPage = 0;
+  let hasNextPage = false;
+
+  function formatTimestamp(ts: Timestamp): string {
+    return ts.toDate().toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+  }
+
+  async function loadPage(pageIndex: number) {
+    statusEl.textContent = 'Loading results…';
+    statusEl.style.display = 'block';
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+
+    try {
+      const cursor = pageStartCursors[pageIndex];
+      const constraints = [orderBy('endTime', 'desc'), limit(PAGE_SIZE)];
+      if (cursor) constraints.push(startAfter(cursor));
+
+      const sessionsSnap = await getDocs(query(collection(db, COLLECTION_NAME), ...constraints));
+      const sessionDocs = sessionsSnap.docs;
+
+      if (sessionDocs.length === 0 && pageIndex === 0) {
+        statusEl.textContent = 'No results yet.';
+        tableWrapperEl.innerHTML = '';
+        pageLabelEl.textContent = '';
+        return;
+      }
+
+      tableWrapperEl.innerHTML = '';
+      const table = document.createElement('table');
+      table.className = 'results-table';
+      const tbody = document.createElement('tbody');
+
+      for (const sessionDoc of sessionDocs) {
+        const { ageGroup, endTime, gender, preTestAnswers, postTestAnswers } = sessionDoc.data();
+
+        const summaryRow = document.createElement('tr');
+        summaryRow.className = 'group-row';
+        summaryRow.innerHTML = `
+          <td>Age Group: ${ageGroup}</td>
+          <td>End Time: ${formatTimestamp(endTime)}</td>
+          <td>Gender: ${gender}</td>
+        `;
+        tbody.appendChild(summaryRow);
+
+        const preRow = document.createElement('tr');
+        const preCell = document.createElement('td');
+        preCell.colSpan = 3;
+        preCell.textContent = `Pre-Test Answers: ${preTestAnswers.join(', ')}`;
+        preRow.appendChild(preCell);
+        tbody.appendChild(preRow);
+
+        const postRow = document.createElement('tr');
+        const postCell = document.createElement('td');
+        postCell.colSpan = 3;
+        postCell.textContent = `Post-Test Answers: ${postTestAnswers.join(', ')}`;
+        postRow.appendChild(postCell);
+        tbody.appendChild(postRow);
+      }
+
+      table.appendChild(tbody);
+      tableWrapperEl.appendChild(table);
+      statusEl.style.display = 'none';
+
+      hasNextPage = sessionDocs.length === PAGE_SIZE;
+      if (hasNextPage) {
+        pageStartCursors[pageIndex + 1] = sessionDocs[sessionDocs.length - 1];
+      }
+
+      currentPage = pageIndex;
+      pageLabelEl.textContent = `Page ${currentPage + 1}`;
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = !hasNextPage;
+    } catch (err) {
+      console.error('Failed to load MineAware SESU results:', err);
+      statusEl.textContent = 'Failed to load results. Please try again later.';
+    }
+  }
+
+  prevBtn.addEventListener('click', () => loadPage(currentPage - 1));
+  nextBtn.addEventListener('click', () => loadPage(currentPage + 1));
+
+  loadPage(0);
+</script>
+
+<style>
+  .results {
+    padding: 4rem 2rem;
+  }
+
+  .results h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+  }
+
+  #status {
+    color: #c0c8d8;
+  }
+
+  :global(.results-table) {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  :global(.results-table td) {
+    padding: 0.4rem 1rem;
+    color: #c0c8d8;
+  }
+
+  :global(.results-table .group-row) {
+    border-top: 1px solid #2a3142;
+  }
+
+  :global(.results-table .group-row td) {
+    padding-top: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  #pageLabel {
+    color: #c0c8d8;
+  }
+</style>
