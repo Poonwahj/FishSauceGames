@@ -98,6 +98,15 @@ import Layout from '../layouts/Layout.astro';
         groupRow.appendChild(groupCell);
         tbody.appendChild(groupRow);
 
+        const headerRow = document.createElement('tr');
+        headerRow.className = 'column-header-row';
+        headerRow.innerHTML = `
+          <td>Scene</td>
+          <td>Found</td>
+          <td>Identified</td>
+        `;
+        tbody.appendChild(headerRow);
+
         for (const scene of scenes) {
           const { sceneName, itemsFound, itemsTotal, itemsCorrectlyIdentified } = scene.data();
           const row = document.createElement('tr');
@@ -176,6 +185,15 @@ import Layout from '../layouts/Layout.astro';
     font-weight: 700;
     color: #ffffff;
     border-bottom: 1px solid #2a3142;
+  }
+
+  :global(.results-table .column-header-row td) {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #6b7a99;
+    padding-top: 0.75rem;
   }
 
   .pagination {
