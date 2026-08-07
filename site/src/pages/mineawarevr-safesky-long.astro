@@ -1,0 +1,185 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="MineAwareVR - SafeSky - Long - Fish Sauce Games">
+  <section class="results">
+    <h1>MineAwareVR - SafeSky - Long</h1>
+
+    <div id="status">Loading results&hellip;</div>
+    <div id="table-wrapper"></div>
+
+    <div class="pagination">
+      <button id="prevBtn" class="btn-outline" disabled>Previous</button>
+      <span id="pageLabel"></span>
+      <button id="nextBtn" class="btn-outline" disabled>Next</button>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import {
+    collection,
+    query,
+    orderBy,
+    limit,
+    startAfter,
+    getDocs,
+    type QueryDocumentSnapshot,
+    type DocumentData,
+  } from 'firebase/firestore';
+  import { db } from '../lib/firebase';
+
+  const COLLECTION_NAME = 'MineAwareVR_SafeSky_Full';
+  const PAGE_SIZE = 10;
+
+  const statusEl = document.getElementById('status')!;
+  const tableWrapperEl = document.getElementById('table-wrapper')!;
+  const prevBtn = document.getElementById('prevBtn') as HTMLButtonElement;
+  const nextBtn = document.getElementById('nextBtn') as HTMLButtonElement;
+  const pageLabelEl = document.getElementById('pageLabel')!;
+
+  // pageStartCursors[n] is the "startAfter" cursor used to fetch page n.
+  // pageStartCursors[0] is undefined (first page has no cursor).
+  const pageStartCursors: (QueryDocumentSnapshot<DocumentData> | undefined)[] = [undefined];
+  let currentPage = 0;
+  let hasNextPage = false;
+
+  function formatDate(isoString: string): string {
+    const date = new Date(isoString);
+    return Number.isNaN(date.getTime())
+      ? isoString
+      : date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+  }
+
+  async function loadPage(pageIndex: number) {
+    statusEl.textContent = 'Loading results…';
+    statusEl.style.display = 'block';
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+
+    try {
+      const cursor = pageStartCursors[pageIndex];
+      const constraints = [orderBy('uploadedAtUtc', 'desc'), limit(PAGE_SIZE)];
+      if (cursor) constraints.push(startAfter(cursor));
+
+      const sessionsSnap = await getDocs(query(collection(db, COLLECTION_NAME), ...constraints));
+      const sessionDocs = sessionsSnap.docs;
+
+      if (sessionDocs.length === 0 && pageIndex === 0) {
+        statusEl.textContent = 'No results yet.';
+        tableWrapperEl.innerHTML = '';
+        pageLabelEl.textContent = '';
+        return;
+      }
+
+      const sessionsWithScenes = await Promise.all(
+        sessionDocs.map(async (sessionDoc) => {
+          const scenesSnap = await getDocs(
+            query(collection(db, COLLECTION_NAME, sessionDoc.id, 'sceneResults'), orderBy('completedAtUtc'))
+          );
+          return { session: sessionDoc, scenes: scenesSnap.docs };
+        })
+      );
+
+      tableWrapperEl.innerHTML = '';
+      const table = document.createElement('table');
+      table.className = 'results-table';
+      const tbody = document.createElement('tbody');
+
+      for (const { session, scenes } of sessionsWithScenes) {
+        const { uploadedAtUtc } = session.data();
+
+        const groupRow = document.createElement('tr');
+        groupRow.className = 'group-row';
+        const groupCell = document.createElement('td');
+        groupCell.colSpan = 3;
+        groupCell.textContent = formatDate(uploadedAtUtc);
+        groupRow.appendChild(groupCell);
+        tbody.appendChild(groupRow);
+
+        for (const scene of scenes) {
+          const { sceneName, itemsFound, itemsTotal, itemsCorrectlyIdentified } = scene.data();
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${sceneName}</td>
+            <td>${itemsFound} / ${itemsTotal}</td>
+            <td>${itemsCorrectlyIdentified} / ${itemsTotal}</td>
+          `;
+          tbody.appendChild(row);
+        }
+      }
+
+      table.appendChild(tbody);
+      tableWrapperEl.appendChild(table);
+      statusEl.style.display = 'none';
+
+      hasNextPage = sessionDocs.length === PAGE_SIZE;
+      if (hasNextPage) {
+        pageStartCursors[pageIndex + 1] = sessionDocs[sessionDocs.length - 1];
+      }
+
+      currentPage = pageIndex;
+      pageLabelEl.textContent = `Page ${currentPage + 1}`;
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = !hasNextPage;
+    } catch (err) {
+      console.error('Failed to load MineAwareVR SafeSky Long results:', err);
+      statusEl.textContent = 'Failed to load results. Please try again later.';
+    }
+  }
+
+  prevBtn.addEventListener('click', () => loadPage(currentPage - 1));
+  nextBtn.addEventListener('click', () => loadPage(currentPage + 1));
+
+  loadPage(0);
+</script>
+
+<style>
+  .results {
+    padding: 4rem 2rem;
+  }
+
+  .results h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+  }
+
+  #status {
+    color: #c0c8d8;
+  }
+
+  :global(.results-table) {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  :global(.results-table td) {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid #1a1f2b;
+    color: #c0c8d8;
+  }
+
+  :global(.results-table .group-row td) {
+    padding-top: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    border-bottom: 1px solid #2a3142;
+  }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  #pageLabel {
+    color: #c0c8d8;
+  }
+</style>
