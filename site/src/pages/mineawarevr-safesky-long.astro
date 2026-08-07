@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.astro';
 <Layout title="MineAwareVR - SafeSky - Long - Fish Sauce Games">
   <section class="results">
     <h1>MineAwareVR - SafeSky - Long</h1>
+    <a href="/mineawarevr-safesky-short" class="other-page-link">View SafeSky - Short results &rarr;</a>
 
     <div id="status">Loading results&hellip;</div>
     <div id="table-wrapper"></div>
@@ -142,7 +143,17 @@ import Layout from '../layouts/Layout.astro';
   .results h1 {
     font-size: 2.5rem;
     font-weight: 800;
+    margin-bottom: 0.75rem;
+  }
+
+  .other-page-link {
+    display: inline-block;
     margin-bottom: 2rem;
+    color: #e05252;
+  }
+
+  .other-page-link:hover {
+    color: #ff7070;
   }
 
   #status {
