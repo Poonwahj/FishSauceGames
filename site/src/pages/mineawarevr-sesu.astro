@@ -90,14 +90,14 @@ import Layout from '../layouts/Layout.astro';
         const preRow = document.createElement('tr');
         const preCell = document.createElement('td');
         preCell.colSpan = 3;
-        preCell.textContent = `Pre-Test Answers: ${preTestAnswers.join(', ')}`;
+        preCell.textContent = `Pre-Test Answers: ${preTestAnswers ? preTestAnswers.join(', ') : 'N/A'}`;
         preRow.appendChild(preCell);
         tbody.appendChild(preRow);
 
         const postRow = document.createElement('tr');
         const postCell = document.createElement('td');
         postCell.colSpan = 3;
-        postCell.textContent = `Post-Test Answers: ${postTestAnswers.join(', ')}`;
+        postCell.textContent = `Post-Test Answers: ${postTestAnswers ? postTestAnswers.join(', ') : 'N/A'}`;
         postRow.appendChild(postCell);
         tbody.appendChild(postRow);
       }
