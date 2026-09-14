@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Adult Content Blocker - Fish Sauce Games">
+  <section class="project-hero">
+    <div class="project-text">
+      <h1>Adult Content Blocker</h1>
+      <p>A lightweight Android app that blocks adult content on your device. Install it directly from the .apk below — no Play Store required.</p>
+      <a href="/downloads/AdultContentBlocker.apk" class="btn-primary" download>Download APK</a>
+    </div>
+    <div class="project-media">
+      <img src="/images/AdultContentBlocker.png" alt="Adult Content Blocker app" onerror="this.style.display='none'" />
+    </div>
+  </section>
+
+  <section class="install-instructions">
+    <h2>How to install</h2>
+    <ol>
+      <li>Download the .apk file to your Android device using the button above.</li>
+      <li>Open the downloaded file. If prompted, allow your browser to install unknown apps.</li>
+      <li>Follow the on-screen prompts to complete installation.</li>
+      <li>Open the app and follow the setup steps to enable content blocking.</li>
+    </ol>
+    <p class="note">This app is distributed directly as an .apk and is not listed on the Google Play Store, so Android will warn you before installing it. This is expected for apps installed outside the Play Store.</p>
+  </section>
+</Layout>
+
+<style>
+  .project-hero {
+    display: flex;
+    align-items: center;
+    min-height: calc(100vh - 90px);
+    padding: 3rem 4rem;
+    gap: 3rem;
+  }
+
+  .project-text {
+    flex: 0 0 auto;
+    max-width: 420px;
+  }
+
+  .project-text h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+  }
+
+  .project-text p {
+    font-size: 1rem;
+    color: #c0c8d8;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .project-media {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    background-color: #000000;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .project-media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-height: 520px;
+    object-fit: cover;
+  }
+
+  .install-instructions {
+    padding: 4rem 2rem;
+    max-width: 860px;
+  }
+
+  .install-instructions h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1.25rem;
+  }
+
+  .install-instructions ol {
+    color: #c0c8d8;
+    line-height: 1.7;
+    padding-left: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .install-instructions li {
+    margin-bottom: 0.5rem;
+  }
+
+  .note {
+    color: #6b7a99;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 768px) {
+    .project-hero {
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+      min-height: auto;
+    }
+
+    .project-text {
+      max-width: 100%;
+    }
+  }
+</style>
