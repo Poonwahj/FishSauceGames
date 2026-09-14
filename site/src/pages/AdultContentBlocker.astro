@@ -18,57 +18,105 @@ import Layout from '../layouts/Layout.astro';
     <p class="intro">Follow these steps in order on your Android phone. It takes about five minutes.</p>
 
     <h3>1. Install the app</h3>
-    <ol>
-      <li>Tap <strong>Download APK</strong> above. The file (<code>AdultContentBlocker.apk</code>) will land in your <strong>Downloads</strong> folder.</li>
-      <li>Open your <strong>Files</strong> app, go to <strong>Downloads</strong>, and tap <strong>AdultContentBlocker.apk</strong>.</li>
-      <li>Tap <strong>Install</strong> on the "Install this app?" prompt.</li>
-      <li>Google Play Protect will scan the file and say <strong>"This app looks safe"</strong> — tap <strong>Install</strong> again to confirm.</li>
-    </ol>
+    <div class="step">
+      <ol>
+        <li>Tap <strong>Download APK</strong> above. The file (<code>AdultContentBlocker.apk</code>) will land in your <strong>Downloads</strong> folder.</li>
+        <li>Open your <strong>Files</strong> app, go to <strong>Downloads</strong>, and tap <strong>AdultContentBlocker.apk</strong>.</li>
+      </ol>
+      <img src="/images/adult-content-blocker/01-find-apk.png" alt="AdultContentBlocker.apk shown in the Downloads folder" class="shot" />
+    </div>
+    <div class="step">
+      <ol start="3">
+        <li>Tap <strong>Install</strong> on the "Install this app?" prompt.</li>
+      </ol>
+      <img src="/images/adult-content-blocker/02-install-dialog.png" alt="Android's 'Install this app?' confirmation dialog" class="shot" />
+    </div>
+    <div class="step">
+      <ol start="4">
+        <li>Google Play Protect will scan the file and say <strong>"This app looks safe"</strong> — tap <strong>Install</strong> again to confirm.</li>
+      </ol>
+      <img src="/images/adult-content-blocker/03-play-protect-safe.png" alt="Google Play Protect saying the app looks safe, with Install highlighted" class="shot" />
+    </div>
     <p class="note">Since this app isn't on the Play Store, Android shows extra warnings during this process. That's expected — Play Protect scans every .apk you install, and once it says the app looks safe you're good to continue.</p>
 
     <h3>2. Open the app and grant permissions</h3>
-    <ol>
-      <li>Open the app from your home screen (look for the shield icon).</li>
-      <li>When asked to allow notifications, tap <strong>Allow</strong> — this lets the app alert you when it blocks something.</li>
-      <li>You'll land on a <strong>Setup</strong> screen with a few items to turn on, each with an <strong>Open settings</strong> button:</li>
-    </ol>
+    <div class="step">
+      <ol>
+        <li>Open the app from your home screen (look for the shield icon).</li>
+      </ol>
+      <img src="/images/adult-content-blocker/04-home-icon.png" alt="The AntiAdultContent shield icon on the home screen" class="shot" />
+    </div>
+    <div class="step">
+      <ol start="2">
+        <li>When asked to allow notifications, tap <strong>Allow</strong> — this lets the app alert you when it blocks something.</li>
+        <li>You'll land on a <strong>Setup</strong> screen with a few items to turn on, each with an <strong>Open settings</strong> button.</li>
+      </ol>
+      <img src="/images/adult-content-blocker/05-allow-notifications.png" alt="Notification permission prompt with Allow highlighted" class="shot" />
+    </div>
 
     <h4>Accessibility service</h4>
-    <ol>
-      <li>Tap <strong>Open settings</strong> next to "Accessibility service."</li>
-      <li>Tap <strong>AntiAdultContent monitoring</strong> in the list.</li>
-      <li>Turn on <strong>Use AntiAdultContent monitoring</strong>.</li>
-      <li>Tap <strong>Allow</strong> on the "Allow full control of your device?" prompt. This is required so the app can detect which app or website is open and block adult content.</li>
-    </ol>
+    <div class="step">
+      <ol>
+        <li>Tap <strong>Open settings</strong> next to "Accessibility service."</li>
+        <li>Tap <strong>AntiAdultContent monitoring</strong> in the list.</li>
+      </ol>
+      <img src="/images/adult-content-blocker/06-accessibility-list.png" alt="Accessibility settings list with AntiAdultContent monitoring listed" class="shot" />
+    </div>
+    <div class="step">
+      <ol start="3">
+        <li>Turn on <strong>Use AntiAdultContent monitoring</strong>.</li>
+        <li>Tap <strong>Allow</strong> on the "Allow full control of your device?" prompt. This is required so the app can detect which app or website is open and block adult content.</li>
+      </ol>
+      <img src="/images/adult-content-blocker/07-accessibility-allow.png" alt="Allow full control of your device prompt with Allow highlighted" class="shot" />
+    </div>
 
     <h4>Display over other apps</h4>
-    <ol>
-      <li>Back on the Setup screen, tap <strong>Open settings</strong> next to "Display over other apps."</li>
-      <li>Turn on <strong>Allow display over other apps</strong>. This lets the app show a full-screen block page when it catches something, instead of just a plain screen.</li>
-    </ol>
+    <div class="step">
+      <ol>
+        <li>Back on the Setup screen, tap <strong>Open settings</strong> next to "Display over other apps," then tap <strong>AntiAdultContent</strong> in the list.</li>
+      </ol>
+      <img src="/images/adult-content-blocker/08-display-over-apps-list.png" alt="Display over other apps list with AntiAdultContent highlighted" class="shot" />
+    </div>
+    <div class="step">
+      <ol start="2">
+        <li>Turn on <strong>Allow display over other apps</strong>. This lets the app show a full-screen block page when it catches something, instead of just a plain screen.</li>
+      </ol>
+      <img src="/images/adult-content-blocker/09-display-over-apps-on.png" alt="Allow display over other apps toggled on" class="shot" />
+    </div>
 
     <h4>Ignore battery optimization</h4>
-    <ol>
-      <li>Tap <strong>Open settings</strong> next to "Ignore battery optimization" and tap <strong>Allow</strong>. This stops Android from shutting the app down in the background, so protection stays active.</li>
-    </ol>
+    <div class="step">
+      <ol>
+        <li>Tap <strong>Open settings</strong> next to "Ignore battery optimization" and tap <strong>Allow</strong>. This stops Android from shutting the app down in the background, so protection stays active.</li>
+      </ol>
+      <img src="/images/adult-content-blocker/10-battery-optimization-allow.png" alt="Let app always run in background prompt with Allow highlighted" class="shot" />
+    </div>
 
     <h3>3. Set up Private DNS (recommended)</h3>
     <p>This is the most important step — it blocks adult content network-wide, at the DNS level, in a way apps can't bypass by redirecting around the app's own filtering.</p>
-    <ol>
-      <li>On the Setup screen, find <strong>Private DNS filtering</strong> and tap <strong>Set it up</strong> (or go to <strong>Settings → Network &amp; Internet → Private DNS</strong> yourself).</li>
-      <li>Select <strong>Private DNS provider hostname</strong>.</li>
-      <li>Enter the hostname: <code>family-filter-dns.cleanbrowsing.org</code></li>
-      <li>Tap <strong>Save</strong>.</li>
-    </ol>
-    <p class="note">You'll know it worked when Network and Internet → Private DNS shows "family-filter-dns.cleanbrowsing.org" underneath it.</p>
+    <div class="step">
+      <ol>
+        <li>On the Setup screen, find <strong>Private DNS filtering</strong> and tap <strong>Set it up</strong> (or go to <strong>Settings → Network &amp; Internet → Private DNS</strong> yourself).</li>
+        <li>Select <strong>Private DNS provider hostname</strong> and enter: <code>family-filter-dns.cleanbrowsing.org</code></li>
+        <li>Tap <strong>Save</strong>.</li>
+      </ol>
+      <img src="/images/adult-content-blocker/11-private-dns-hostname.png" alt="Private DNS provider hostname set to family-filter-dns.cleanbrowsing.org" class="shot" />
+    </div>
+    <div class="step">
+      <img src="/images/adult-content-blocker/12-private-dns-confirmed.png" alt="Network and Internet settings showing Private DNS set" class="shot shot-alone" />
+      <p class="note">You'll know it worked when Network and Internet → Private DNS shows "family-filter-dns.cleanbrowsing.org" underneath it, like this.</p>
+    </div>
 
     <h3>4. Choose what to protect</h3>
     <p>Back in the app, under <strong>Protection</strong>:</p>
-    <ol>
-      <li>Tap <strong>Choose blocked apps</strong> to select any apps you want blocked outright.</li>
-      <li>Tap <strong>Choose monitored browsers</strong> to select which browsers the app should watch for adult sites.</li>
-      <li><strong>Force SafeSearch</strong> is on by default — it adds SafeSearch to Google, Bing, DuckDuckGo, and Brave in the browsers you monitor.</li>
-    </ol>
+    <div class="step">
+      <ol>
+        <li>Tap <strong>Choose blocked apps</strong> to select any apps you want blocked outright.</li>
+        <li>Tap <strong>Choose monitored browsers</strong> and check every browser installed on your phone (e.g. Chrome, Kiwi) so their address bars get checked against the blocklist.</li>
+        <li><strong>Force SafeSearch</strong> is on by default — it adds SafeSearch to Google, Bing, DuckDuckGo, and Brave in the browsers you monitor.</li>
+      </ol>
+      <img src="/images/adult-content-blocker/13-monitored-browsers.png" alt="Monitored browsers screen with Chrome and Kiwi both checked" class="shot" />
+    </div>
 
     <p class="note">Once everything above shows a checkmark on the Setup screen, protection is active. Blocked attempts will show up under "Recent blocks" in the app.</p>
   </section>
@@ -160,11 +208,35 @@ import Layout from '../layouts/Layout.astro';
     color: #c0c8d8;
     line-height: 1.7;
     padding-left: 1.25rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0;
   }
 
   .install-instructions li {
     margin-bottom: 0.5rem;
+  }
+
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .step ol {
+    flex: 1 1 320px;
+  }
+
+  .shot {
+    flex: 0 0 200px;
+    width: 200px;
+    height: auto;
+    border-radius: 12px;
+    border: 1px solid #2a3346;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  .shot-alone {
+    flex: 0 0 200px;
   }
 
   .install-instructions code {
@@ -181,6 +253,11 @@ import Layout from '../layouts/Layout.astro';
     line-height: 1.6;
   }
 
+  .step p.note {
+    flex: 1 1 320px;
+    margin-bottom: 0;
+  }
+
   @media (max-width: 768px) {
     .project-hero {
       flex-direction: column;
@@ -190,6 +267,16 @@ import Layout from '../layouts/Layout.astro';
 
     .project-text {
       max-width: 100%;
+    }
+
+    .step {
+      flex-direction: column;
+    }
+
+    .shot {
+      flex: none;
+      width: 60%;
+      max-width: 220px;
     }
   }
 </style>
