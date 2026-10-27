@@ -1,0 +1,304 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../styles/hexmap.css';
+---
+<Layout title="MineAware-NTS Maps - Fish Sauce Games">
+  <section class="maps">
+    <div class="maps-header">
+      <h1>MineAware-NTS Maps</h1>
+      <div id="auth" class="hm-auth"></div>
+    </div>
+
+    <div id="banner" class="hm-banner" hidden></div>
+
+    <form id="createForm" class="create-form" hidden>
+      <label>
+        <span>Map name</span>
+        <input id="newName" class="hm-input" required maxlength="100" placeholder="e.g. Outer hexes safe" />
+      </label>
+      <label>
+        <span>Columns</span>
+        <input id="newColumns" class="hm-input" type="number" min="1" max="100" value="24" required />
+      </label>
+      <label>
+        <span>Rows</span>
+        <input id="newRows" class="hm-input" type="number" min="1" max="100" value="24" required />
+      </label>
+      <button class="hm-btn" type="submit" id="createBtn">Create map</button>
+    </form>
+
+    <div id="status">Loading maps&hellip;</div>
+    <div id="mapList" class="map-list"></div>
+  </section>
+</Layout>
+
+<script>
+  import {
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    getDocs,
+    orderBy,
+    query,
+    serverTimestamp,
+    Timestamp,
+  } from 'firebase/firestore';
+  import { db } from '../lib/firebase';
+  import { renderAuthControl, watchEditorStatus, type EditorStatus } from '../lib/hexmap/auth';
+  import { MAPS_COLLECTION, createMap, sanitizeMap, toFirestoreFields } from '../lib/hexmap/model';
+
+  const EDITOR_URL = '/mineaware-nts-map-editor';
+
+  const authEl = document.getElementById('auth')!;
+  const bannerEl = document.getElementById('banner')!;
+  const formEl = document.getElementById('createForm') as HTMLFormElement;
+  const statusEl = document.getElementById('status')!;
+  const listEl = document.getElementById('mapList')!;
+  const createBtn = document.getElementById('createBtn') as HTMLButtonElement;
+
+  let status: EditorStatus = { user: null, isEditor: false };
+
+  function formatUpdated(ts: unknown): string {
+    return ts instanceof Timestamp ? ts.toDate().toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : '—';
+  }
+
+  async function createMapDoc(fields: ReturnType<typeof toFirestoreFields>) {
+    const ref = await addDoc(collection(db, MAPS_COLLECTION), {
+      ...fields,
+      revision: 0,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+      updatedBy: status.user?.email ?? null,
+    });
+    location.href = `${EDITOR_URL}?id=${encodeURIComponent(ref.id)}`;
+  }
+
+  async function loadMaps() {
+    statusEl.textContent = 'Loading maps…';
+    statusEl.style.display = 'block';
+    try {
+      const snap = await getDocs(query(collection(db, MAPS_COLLECTION), orderBy('updatedAt', 'desc')));
+      listEl.innerHTML = '';
+      if (snap.empty) {
+        statusEl.textContent = status.isEditor ? 'No maps yet. Create one above.' : 'No maps yet.';
+        return;
+      }
+      statusEl.style.display = 'none';
+
+      for (const mapDoc of snap.docs) {
+        const data = mapDoc.data();
+        const map = sanitizeMap(data);
+
+        const row = document.createElement('div');
+        row.className = 'map-row';
+
+        const info = document.createElement('a');
+        info.className = 'map-info';
+        info.href = `${EDITOR_URL}?id=${encodeURIComponent(mapDoc.id)}`;
+        const name = document.createElement('span');
+        name.className = 'map-name';
+        name.textContent = map.name;
+        const meta = document.createElement('span');
+        meta.className = 'map-meta';
+        meta.textContent = `${map.columns} × ${map.rows} hexes · updated ${formatUpdated(data.updatedAt)}${data.updatedBy ? ` by ${data.updatedBy}` : ''}`;
+        info.append(name, meta);
+        row.appendChild(info);
+
+        if (status.isEditor) {
+          const actions = document.createElement('div');
+          actions.className = 'map-actions';
+
+          const dupBtn = document.createElement('button');
+          dupBtn.className = 'hm-btn hm-btn-quiet';
+          dupBtn.textContent = 'Duplicate';
+          dupBtn.addEventListener('click', async () => {
+            dupBtn.disabled = true;
+            try {
+              await createMapDoc(toFirestoreFields({ ...map, name: `${map.name} (copy)` }));
+            } catch (err) {
+              console.error('Failed to duplicate map:', err);
+              alert('Could not duplicate the map.');
+              dupBtn.disabled = false;
+            }
+          });
+
+          const delBtn = document.createElement('button');
+          delBtn.className = 'hm-btn hm-btn-danger';
+          delBtn.textContent = 'Delete';
+          delBtn.addEventListener('click', async () => {
+            if (!confirm(`Delete "${map.name}"? This can't be undone.`)) return;
+            delBtn.disabled = true;
+            try {
+              await deleteDoc(doc(db, MAPS_COLLECTION, mapDoc.id));
+              row.remove();
+            } catch (err) {
+              console.error('Failed to delete map:', err);
+              alert('Could not delete the map.');
+              delBtn.disabled = false;
+            }
+          });
+
+          actions.append(dupBtn, delBtn);
+          row.appendChild(actions);
+        }
+
+        listEl.appendChild(row);
+      }
+    } catch (err: any) {
+      console.error('Failed to load MineAware-NTS maps:', err);
+      statusEl.textContent =
+        err?.code === 'permission-denied'
+          ? `Firestore denied access to ${MAPS_COLLECTION} — the security rules for map storage haven't been published yet.`
+          : 'Failed to load maps. Please try again later.';
+    }
+  }
+
+  formEl.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = (document.getElementById('newName') as HTMLInputElement).value.trim();
+    const columns = Number((document.getElementById('newColumns') as HTMLInputElement).value);
+    const rows = Number((document.getElementById('newRows') as HTMLInputElement).value);
+    if (!name) return;
+    createBtn.disabled = true;
+    try {
+      await createMapDoc(toFirestoreFields(createMap(name, columns, rows)));
+    } catch (err) {
+      console.error('Failed to create map:', err);
+      alert('Could not create the map.');
+      createBtn.disabled = false;
+    }
+  });
+
+  watchEditorStatus((s) => {
+    status = s;
+    renderAuthControl(authEl, s);
+    formEl.hidden = !s.isEditor;
+    if (!s.user) {
+      bannerEl.hidden = false;
+      bannerEl.textContent = 'Anyone can view these maps. Sign in with an approved Google account to create or edit them.';
+    } else if (!s.isEditor) {
+      bannerEl.hidden = false;
+      bannerEl.textContent = `${s.user.email} isn't on the editor list, so maps are view-only.`;
+    } else {
+      bannerEl.hidden = true;
+    }
+    loadMaps();
+  });
+</script>
+
+<style>
+  .maps {
+    padding: 4rem 2rem;
+  }
+
+  .maps-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .maps h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0;
+  }
+
+  .create-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 7rem 7rem auto;
+    gap: 0.75rem;
+    align-items: end;
+    margin: 1.5rem 0 2rem;
+    padding: 1.25rem;
+    background: #131923;
+    border: 1px solid #222a38;
+    border-radius: 10px;
+  }
+
+  .create-form[hidden] {
+    display: none;
+  }
+
+  .create-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    color: #8b95a7;
+  }
+
+  #status {
+    color: #c0c8d8;
+    margin-top: 1.5rem;
+  }
+
+  .map-list {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+  }
+
+  :global(.map-row) {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 0;
+    border-top: 1px solid #222a38;
+  }
+
+  :global(.map-info) {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  :global(.map-name) {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+
+  :global(.map-info:hover .map-name) {
+    color: #ff7070;
+  }
+
+  :global(.map-meta) {
+    color: #8b95a7;
+    font-size: 0.8rem;
+  }
+
+  :global(.map-actions) {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .maps {
+      padding: 2.5rem 1rem;
+    }
+
+    .maps h1 {
+      font-size: 1.8rem;
+    }
+
+    .create-form {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .create-form label:first-child,
+    .create-form button {
+      grid-column: 1 / -1;
+    }
+
+    :global(.map-row) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+</style>

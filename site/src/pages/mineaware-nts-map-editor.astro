@@ -1,0 +1,1267 @@
+---
+// Full-viewport editor, so it skips the site Layout (nav + footer + 1240px cap).
+import '../styles/global.css';
+import '../styles/hexmap.css';
+
+const icons: Record<string, string> = {
+  select: '<path d="M4 3l7 17 2.5-7.5L21 10z"/>',
+  paint: '<path d="M12 2.5l8.2 4.75v9.5L12 21.5l-8.2-4.75v-9.5z" fill="currentColor" fill-opacity="0.35"/>',
+  fill: '<path d="M19 11l-8-8-8.6 8.6a2 2 0 0 0 0 2.8l5.2 5.2a2 2 0 0 0 2.8 0z"/><path d="M5 2l5 5"/><path d="M2 13h15"/><path d="M22 20a2 2 0 1 1-4 0c0-1.6 1.7-2.4 2-4 .3 1.6 2 2.4 2 4z"/>',
+  score: '<path d="M5 9h14"/><path d="M4 15h14"/><path d="M10 3L8 21"/><path d="M16 3l-2 18"/>',
+  pen: '<path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>',
+  erase: '<path d="M7 21l-4.3-4.3a2.4 2.4 0 0 1 0-3.4l9.6-9.6a2.4 2.4 0 0 1 3.4 0l5.6 5.6a2.4 2.4 0 0 1 0 3.4L13 21"/><path d="M22 21H7"/><path d="M5 11l9 9"/>',
+  note: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  pan: '<path d="M5 9l-3 3 3 3"/><path d="M9 5l3-3 3 3"/><path d="M15 19l-3 3-3-3"/><path d="M19 9l3 3-3 3"/><path d="M2 12h20"/><path d="M12 2v20"/>',
+};
+
+const tools = [
+  { id: 'select', label: 'Select', key: 'V' },
+  { id: 'paint', label: 'Paint', key: 'B' },
+  { id: 'fill', label: 'Fill', key: 'G' },
+  { id: 'score', label: 'Score', key: 'S' },
+  { id: 'pen', label: 'Draw', key: 'P' },
+  { id: 'erase', label: 'Erase', key: 'E' },
+  { id: 'note', label: 'Note', key: 'N' },
+  { id: 'pan', label: 'Pan', key: 'H' },
+];
+
+const quickScores = [-3, -2, -1, 0, 1, 2, 3, 10];
+const penColors = ['#ff3b6b', '#ffd23f', '#22d3ee', '#ffffff', '#111111', '#7c3aed'];
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <title>Map Editor - MineAware-NTS</title>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <a href="/mineaware-nts-maps" class="back">&larr; Maps</a>
+      <input id="mapName" class="hm-input name-input" maxlength="100" aria-label="Map name" data-edit disabled />
+      <span id="mapSize" class="muted"></span>
+      <span id="saveStatus" class="save-status"></span>
+      <div class="spacer"></div>
+      <button id="undoBtn" class="hm-btn hm-btn-quiet" title="Undo (Ctrl+Z)" disabled>Undo</button>
+      <button id="redoBtn" class="hm-btn hm-btn-quiet" title="Redo (Ctrl+Y)" disabled>Redo</button>
+      <div id="auth" class="hm-auth"></div>
+    </header>
+
+    <div id="banner" class="hm-banner banner" hidden></div>
+
+    <div class="body">
+      <nav class="tools" aria-label="Tools">
+        {tools.map((t) => (
+          <button class="tool" data-tool={t.id} title={`${t.label} (${t.key})`}>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons[t.id]} />
+            <span>{t.label}</span>
+          </button>
+        ))}
+      </nav>
+
+      <div class="stage">
+        <canvas id="canvas"></canvas>
+        <div id="loading" class="loading">Loading map&hellip;</div>
+        <div class="zoom">
+          <button id="zoomOut" class="hm-btn hm-btn-quiet" title="Zoom out">&minus;</button>
+          <button id="zoomFit" class="hm-btn hm-btn-quiet" title="Fit map (0)">Fit</button>
+          <button id="zoomIn" class="hm-btn hm-btn-quiet" title="Zoom in">+</button>
+        </div>
+        <div id="hoverInfo" class="hover-info"></div>
+      </div>
+
+      <aside class="sidebar">
+        <section id="opt-brush" class="panel" data-for="paint score">
+          <h2>Brush size</h2>
+          <div class="seg" id="brushSeg">
+            <button data-radius="0" class="active">1 hex</button>
+            <button data-radius="1">7</button>
+            <button data-radius="2">19</button>
+            <button data-radius="3">37</button>
+          </div>
+        </section>
+
+        <section id="opt-score" class="panel" data-for="score">
+          <h2>Score brush</h2>
+          <div class="seg" id="channelSeg">
+            <button data-channel="walk" class="active">Walking</button>
+            <button data-channel="polygon">Polygon</button>
+          </div>
+          <label class="field">
+            <span>Value</span>
+            <input id="scoreValue" class="hm-input" type="number" step="any" value="1" />
+          </label>
+          <div class="chips">
+            {quickScores.map((v) => <button data-score={v}>{v > 0 ? `+${v}` : v}</button>)}
+          </div>
+        </section>
+
+        <section id="opt-pen" class="panel" data-for="pen">
+          <h2>Pen</h2>
+          <div class="chips swatches">
+            {penColors.map((c) => <button data-pen-color={c} style={`background:${c}`} aria-label={c}></button>)}
+            <input id="penColor" type="color" value="#ff3b6b" aria-label="Custom pen colour" />
+          </div>
+          <div class="seg" id="penWidthSeg">
+            <button data-width="0.08">Fine</button>
+            <button data-width="0.15" class="active">Medium</button>
+            <button data-width="0.3">Thick</button>
+            <button data-width="0.6">Marker</button>
+          </div>
+        </section>
+
+        <section id="opt-erase" class="panel" data-for="erase">
+          <h2>Erase</h2>
+          <p class="hint">Drag over drawings or notes to remove them. Terrain and scores aren't affected.</p>
+        </section>
+
+        <section id="opt-note" class="panel" data-for="note">
+          <h2>Notes</h2>
+          <p class="hint">Click the map to pin a note. Click an existing note to edit or delete it.</p>
+        </section>
+
+        <section class="panel" data-for="paint fill select">
+          <h2>Terrain</h2>
+          <div id="palette" class="palette"></div>
+          <button id="addTerrain" class="hm-btn hm-btn-quiet add-terrain" data-edit>+ Add terrain</button>
+        </section>
+
+        <section class="panel">
+          <h2>Selected hex</h2>
+          <div id="inspector"><p class="hint">Use the Select tool and click a hex.</p></div>
+        </section>
+
+        <section class="panel">
+          <h2>View</h2>
+          <label class="field">
+            <span>Hex colours</span>
+            <select id="viewFill" class="hm-input">
+              <option value="terrain">Terrain</option>
+              <option value="walk">Walking score heatmap</option>
+              <option value="polygon">Polygon score heatmap</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Score labels</span>
+            <select id="viewLabels" class="hm-input">
+              <option value="both">Walking + polygon</option>
+              <option value="walk">Walking only</option>
+              <option value="polygon">Polygon only</option>
+              <option value="none">None</option>
+            </select>
+          </label>
+          <label class="check"><input type="checkbox" id="viewMarkup" checked /> Drawings &amp; notes</label>
+          <label class="check"><input type="checkbox" id="viewGrid" checked /> Grid lines</label>
+          <label class="check"><input type="checkbox" id="viewIndices" /> Cell index (Unity cellIndex)</label>
+        </section>
+
+        <section class="panel">
+          <h2>Map size</h2>
+          <div class="size-row">
+            <label class="field"><span>Columns</span><input id="sizeColumns" class="hm-input" type="number" min="1" max="100" data-edit /></label>
+            <label class="field"><span>Rows</span><input id="sizeRows" class="hm-input" type="number" min="1" max="100" data-edit /></label>
+          </div>
+          <button id="applySize" class="hm-btn hm-btn-quiet" data-edit>Resize map</button>
+          <p class="hint">Row 0 is the bottom row and odd columns sit half a hex lower, matching the diorama grid in Unity.</p>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <dialog id="noteDialog" class="note-dialog">
+    <form method="dialog">
+      <h2 id="noteTitle">Note</h2>
+      <textarea id="noteText" class="hm-input" rows="4" maxlength="500"></textarea>
+      <div class="chips swatches" id="noteColors">
+        {['#ffe066', '#ff3b6b', '#22d3ee', '#4ade80', '#ffffff'].map((c) => <button type="button" data-note-color={c} style={`background:${c}`} aria-label={c}></button>)}
+      </div>
+      <div class="dialog-actions">
+        <button type="button" id="noteDelete" class="hm-btn hm-btn-danger">Delete</button>
+        <div class="spacer"></div>
+        <button type="button" id="noteCancel" class="hm-btn hm-btn-quiet">Cancel</button>
+        <button type="submit" id="noteSave" class="hm-btn">Save</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
+
+<script>
+  import { doc, getDoc, runTransaction, serverTimestamp } from 'firebase/firestore';
+  import { db } from '../lib/firebase';
+  import { auth, renderAuthControl, watchEditorStatus } from '../lib/hexmap/auth';
+  import { HexMapEditor, type Tool } from '../lib/hexmap/editor';
+  import {
+    MAPS_COLLECTION,
+    UNASSIGNED,
+    cellColumn,
+    cellRow,
+    clampDimension,
+    createMap,
+    removeTerrain,
+    resizeMap,
+    sanitizeMap,
+    toFirestoreFields,
+    type HexMap,
+  } from '../lib/hexmap/model';
+
+  const AUTOSAVE_DELAY_MS = 1200;
+  const RETRY_DELAY_MS = 5000;
+  const SIZE_WARNING_BYTES = 850_000; // Firestore rejects documents over 1 MiB
+
+  const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
+  const nameInput = $<HTMLInputElement>('mapName');
+  const sizeLabel = $('mapSize');
+  const saveStatusEl = $('saveStatus');
+  const bannerEl = $('banner');
+  const loadingEl = $('loading');
+  const undoBtn = $<HTMLButtonElement>('undoBtn');
+  const redoBtn = $<HTMLButtonElement>('redoBtn');
+  const paletteEl = $('palette');
+  const inspectorEl = $('inspector');
+  const hoverInfoEl = $('hoverInfo');
+  const noteDialog = $<HTMLDialogElement>('noteDialog');
+  const noteText = $<HTMLTextAreaElement>('noteText');
+
+  const mapId = new URLSearchParams(location.search).get('id');
+  const mapRef = mapId ? doc(db, MAPS_COLLECTION, mapId) : null;
+  // `?id=dev-local` in `npm run dev` opens a throwaway map without Firestore, for UI testing.
+  const devLocal = import.meta.env.DEV && mapId === 'dev-local';
+
+  let editor: HexMapEditor;
+  let isEditor = false;
+  let loadedRevision = 0;
+  let dirty = false;
+  let saving = false;
+  let saveBlocked: 'conflict' | 'denied' | 'deleted' | null = null;
+  let saveTimer: number | undefined;
+  let renderedPaletteKey = '';
+
+  // ---------- Banner / status ----------
+
+  function showBanner(kind: 'info' | 'warn' | 'error', message: string, actions: { label: string; quiet?: boolean; onClick: () => void }[] = []) {
+    bannerEl.className = `hm-banner banner ${kind === 'info' ? '' : kind}`;
+    bannerEl.innerHTML = '';
+    const text = document.createElement('span');
+    text.textContent = message;
+    bannerEl.appendChild(text);
+    for (const a of actions) {
+      const btn = document.createElement('button');
+      btn.className = a.quiet ? 'hm-btn hm-btn-quiet' : 'hm-btn';
+      btn.textContent = a.label;
+      btn.addEventListener('click', a.onClick);
+      bannerEl.appendChild(btn);
+    }
+    bannerEl.hidden = false;
+  }
+
+  function hideBanner() {
+    bannerEl.hidden = true;
+  }
+
+  function setSaveStatus(text: string, tone: 'ok' | 'busy' | 'warn' | 'error' = 'ok') {
+    saveStatusEl.textContent = text;
+    saveStatusEl.dataset.tone = tone;
+  }
+
+  function refreshAccessBanner() {
+    if (saveBlocked) return; // save problems take priority
+    if (devLocal) showBanner('warn', 'Dev-only local map — nothing is saved.');
+    else if (!auth.currentUser) showBanner('info', 'View only. Sign in with an approved Google account to edit this map.');
+    else if (!isEditor) showBanner('warn', `${auth.currentUser.email} isn't on the editor list, so this map is view-only.`);
+    else hideBanner();
+  }
+
+  // ---------- Saving ----------
+
+  function markDirty() {
+    if (devLocal) return;
+    dirty = true;
+    window.clearTimeout(saveTimer);
+    if (!saveBlocked) {
+      setSaveStatus('Unsaved changes', 'busy');
+      saveTimer = window.setTimeout(() => save(), AUTOSAVE_DELAY_MS);
+    }
+  }
+
+  async function save(force = false) {
+    if (!mapRef || !dirty || saving || !isEditor) return;
+    if (saveBlocked && !force) return;
+    saving = true;
+    setSaveStatus('Saving…', 'busy');
+
+    const fields = JSON.parse(JSON.stringify(toFirestoreFields(editor.map)));
+    const bytes = JSON.stringify(fields).length;
+    dirty = false;
+
+    try {
+      const newRevision = await runTransaction(db, async (tx) => {
+        const snap = await tx.get(mapRef);
+        if (!snap.exists()) throw new Error('deleted');
+        const currentRevision = Number(snap.data().revision ?? 0);
+        if (!force && currentRevision !== loadedRevision) throw new Error('conflict');
+        tx.update(mapRef, {
+          ...fields,
+          revision: currentRevision + 1,
+          updatedAt: serverTimestamp(),
+          updatedBy: auth.currentUser?.email ?? null,
+        });
+        return currentRevision + 1;
+      });
+      loadedRevision = newRevision;
+      if (saveBlocked) {
+        saveBlocked = null;
+        refreshAccessBanner();
+      }
+      setSaveStatus(bytes > SIZE_WARNING_BYTES ? 'Saved — map is near the 1 MB size limit' : 'Saved', bytes > SIZE_WARNING_BYTES ? 'warn' : 'ok');
+    } catch (err: any) {
+      dirty = true;
+      const reason = err?.message === 'conflict' || err?.message === 'deleted' ? err.message : err?.code === 'permission-denied' ? 'denied' : null;
+      if (reason === 'conflict') {
+        saveBlocked = 'conflict';
+        setSaveStatus('Not saved', 'error');
+        showBanner('error', 'Someone else saved this map after you opened it. Your latest changes are not saved.', [
+          { label: 'Load their version', quiet: true, onClick: () => reloadFromServer() },
+          { label: 'Overwrite with mine', onClick: () => save(true) },
+        ]);
+      } else if (reason === 'deleted') {
+        saveBlocked = 'deleted';
+        setSaveStatus('Not saved', 'error');
+        showBanner('error', 'This map was deleted by someone else, so changes can no longer be saved.');
+      } else if (reason === 'denied') {
+        saveBlocked = 'denied';
+        setSaveStatus('Not saved', 'error');
+        showBanner('error', "Firestore refused the save — this account isn't allowed to edit maps.");
+      } else {
+        console.error('Failed to save map:', err);
+        setSaveStatus(`Save failed — retrying (${err?.message ?? 'unknown error'})`, 'error');
+        window.clearTimeout(saveTimer);
+        saveTimer = window.setTimeout(() => save(), RETRY_DELAY_MS);
+      }
+    } finally {
+      saving = false;
+      if (dirty && !saveBlocked) {
+        window.clearTimeout(saveTimer);
+        saveTimer = window.setTimeout(() => save(), AUTOSAVE_DELAY_MS);
+      }
+    }
+  }
+
+  async function fetchMap(): Promise<{ map: HexMap; revision: number } | null> {
+    if (!mapRef) return null;
+    const snap = await getDoc(mapRef);
+    if (!snap.exists()) return null;
+    return { map: sanitizeMap(snap.data()), revision: Number(snap.data().revision ?? 0) };
+  }
+
+  async function reloadFromServer() {
+    const result = await fetchMap();
+    if (!result) return;
+    loadedRevision = result.revision;
+    dirty = false;
+    saveBlocked = null;
+    editor.setMap(result.map, true);
+    editor.fitView();
+    syncMapFields();
+    setSaveStatus('Saved');
+    refreshAccessBanner();
+  }
+
+  window.addEventListener('beforeunload', (e) => {
+    if (dirty || saving) e.preventDefault();
+  });
+
+  // ---------- Sidebar: palette ----------
+
+  function renderPalette(force = false) {
+    const map = editor.map;
+    const counts = new Array(map.palette.length).fill(0);
+    for (const t of map.terrain) if (t >= 0) counts[t]++;
+
+    // Skip rebuilding when nothing visible changed, so typing in a name field keeps focus.
+    const key = JSON.stringify([map.palette, counts, editor.terrainIndex, isEditor]);
+    if (!force && key === renderedPaletteKey) return;
+    renderedPaletteKey = key;
+
+    paletteEl.innerHTML = '';
+    map.palette.forEach((terrain, index) => {
+      const row = document.createElement('div');
+      row.className = `terrain${index === editor.terrainIndex ? ' active' : ''}`;
+
+      const pick = document.createElement('button');
+      pick.className = 'terrain-pick';
+      pick.title = index < 9 ? `Paint with ${terrain.name} (${index + 1})` : `Paint with ${terrain.name}`;
+      pick.style.background = terrain.color;
+      pick.addEventListener('click', () => selectTerrain(index));
+
+      const color = document.createElement('input');
+      color.type = 'color';
+      color.value = terrain.color;
+      color.disabled = !isEditor;
+      color.title = 'Change colour';
+      color.addEventListener('change', () =>
+        editor.edit((m) => {
+          m.palette[index].color = color.value;
+        }),
+      );
+
+      const name = document.createElement('input');
+      name.className = 'hm-input terrain-name';
+      name.value = terrain.name;
+      name.disabled = !isEditor;
+      name.addEventListener('focus', () => selectTerrain(index, false));
+      name.addEventListener('change', () =>
+        editor.edit((m) => {
+          const v = name.value.trim();
+          if (!v || v === m.palette[index].name) return false;
+          m.palette[index].name = v;
+        }),
+      );
+
+      const count = document.createElement('span');
+      count.className = 'terrain-count';
+      count.textContent = String(counts[index]);
+      count.title = `${counts[index]} hexes`;
+
+      const del = document.createElement('button');
+      del.className = 'terrain-del';
+      del.textContent = '×';
+      del.title = 'Remove terrain';
+      del.disabled = !isEditor;
+      del.addEventListener('click', () => {
+        if (counts[index] > 0 && !confirm(`Remove "${terrain.name}"? ${counts[index]} hexes will become unassigned.`)) return;
+        editor.edit((m) => removeTerrain(m, index));
+        if (editor.terrainIndex >= editor.map.palette.length) selectTerrain(Math.max(0, editor.map.palette.length - 1));
+      });
+
+      row.append(pick, color, name, count, del);
+      paletteEl.appendChild(row);
+    });
+  }
+
+  function selectTerrain(index: number, switchTool = true) {
+    editor.terrainIndex = index;
+    if (switchTool && editor.tool !== 'paint' && editor.tool !== 'fill') setTool('paint');
+    renderPalette();
+  }
+
+  $('addTerrain').addEventListener('click', () => {
+    const hue = Math.floor(Math.random() * 360);
+    editor.edit((m) => {
+      m.palette.push({ name: `Terrain ${m.palette.length + 1}`, color: hslToHex(hue, 55, 60) });
+    });
+    selectTerrain(editor.map.palette.length - 1);
+  });
+
+  function hslToHex(h: number, s: number, l: number) {
+    s /= 100;
+    l /= 100;
+    const f = (n: number) => {
+      const k = (n + h / 30) % 12;
+      const c = l - s * Math.min(l, 1 - l) * Math.max(-1, Math.min(k - 3, 9 - k, 1));
+      return Math.round(c * 255).toString(16).padStart(2, '0');
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+  }
+
+  // ---------- Sidebar: inspector ----------
+
+  function renderInspector() {
+    const i = editor.selected;
+    const map = editor.map;
+    inspectorEl.innerHTML = '';
+    if (i < 0) {
+      inspectorEl.innerHTML = '<p class="hint">Use the Select tool and click a hex.</p>';
+      return;
+    }
+    const heading = document.createElement('p');
+    heading.className = 'inspector-id';
+    heading.textContent = `cellIndex ${i} · column ${cellColumn(i, map.columns)}, row ${cellRow(i, map.columns)}`;
+
+    const terrainSelect = document.createElement('select');
+    terrainSelect.className = 'hm-input';
+    terrainSelect.disabled = !isEditor;
+    const none = new Option('Unassigned', String(UNASSIGNED));
+    terrainSelect.add(none);
+    map.palette.forEach((t, idx) => terrainSelect.add(new Option(t.name, String(idx))));
+    terrainSelect.value = String(map.terrain[i]);
+    terrainSelect.addEventListener('change', () => editor.edit((m) => void (m.terrain[i] = Number(terrainSelect.value))));
+
+    const numberField = (label: string, value: number, apply: (m: HexMap, v: number) => void) => {
+      const wrap = document.createElement('label');
+      wrap.className = 'field';
+      const span = document.createElement('span');
+      span.textContent = label;
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.step = 'any';
+      input.className = 'hm-input';
+      input.value = String(value);
+      input.disabled = !isEditor;
+      input.addEventListener('change', () => {
+        const v = Number(input.value);
+        if (Number.isFinite(v)) editor.edit((m) => apply(m, v));
+      });
+      wrap.append(span, input);
+      return wrap;
+    };
+
+    const terrainField = document.createElement('label');
+    terrainField.className = 'field';
+    const terrainLabel = document.createElement('span');
+    terrainLabel.textContent = 'Terrain';
+    terrainField.append(terrainLabel, terrainSelect);
+
+    const scores = document.createElement('div');
+    scores.className = 'size-row';
+    scores.append(
+      numberField('Walking score', map.walkScores[i], (m, v) => void (m.walkScores[i] = v)),
+      numberField('Polygon score', map.polygonScores[i], (m, v) => void (m.polygonScores[i] = v)),
+    );
+
+    inspectorEl.append(heading, terrainField, scores);
+  }
+
+  function describeCell(i: number) {
+    const map = editor.map;
+    if (i < 0) return '';
+    const t = map.terrain[i];
+    const terrain = t === UNASSIGNED ? 'Unassigned' : map.palette[t]?.name ?? '?';
+    return `#${i} · col ${cellColumn(i, map.columns)}, row ${cellRow(i, map.columns)} · ${terrain} · walk ${map.walkScores[i]} · polygon ${map.polygonScores[i]}`;
+  }
+
+  // ---------- Map-level fields ----------
+
+  function syncMapFields() {
+    const map = editor.map;
+    if (document.activeElement !== nameInput) nameInput.value = map.name;
+    document.title = `${map.name} - MineAware-NTS Map Editor`;
+    sizeLabel.textContent = `${map.columns} × ${map.rows}`;
+    ($('sizeColumns') as HTMLInputElement).value = String(map.columns);
+    ($('sizeRows') as HTMLInputElement).value = String(map.rows);
+    renderPalette();
+    renderInspector();
+  }
+
+  nameInput.addEventListener('change', () => {
+    const v = nameInput.value.trim();
+    if (!v) {
+      nameInput.value = editor.map.name;
+      return;
+    }
+    editor.edit((m) => {
+      if (m.name === v) return false;
+      m.name = v;
+    });
+  });
+
+  $('applySize').addEventListener('click', () => {
+    const columns = clampDimension(Number(($('sizeColumns') as HTMLInputElement).value));
+    const rows = clampDimension(Number(($('sizeRows') as HTMLInputElement).value));
+    const map = editor.map;
+    if (columns === map.columns && rows === map.rows) return;
+    if ((columns < map.columns || rows < map.rows) && !confirm('Shrinking the map removes the hexes outside the new size. Continue?')) return;
+    editor.edit((m) => resizeMap(m, columns, rows));
+    editor.fitView();
+  });
+
+  // ---------- Tools ----------
+
+  const toolButtons = [...document.querySelectorAll<HTMLButtonElement>('.tool')];
+  const editTools: Tool[] = ['paint', 'fill', 'score', 'pen', 'erase', 'note'];
+
+  function setTool(tool: Tool) {
+    if (!isEditor && editTools.includes(tool)) return;
+    editor.setTool(tool);
+    for (const b of toolButtons) b.classList.toggle('active', b.dataset.tool === tool);
+    for (const panel of document.querySelectorAll<HTMLElement>('.panel[data-for]')) {
+      panel.hidden = !panel.dataset.for!.split(' ').includes(tool);
+    }
+  }
+
+  for (const b of toolButtons) b.addEventListener('click', () => setTool(b.dataset.tool as Tool));
+
+  function bindSeg(id: string, onPick: (btn: HTMLButtonElement) => void) {
+    const seg = $(id);
+    seg.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('button');
+      if (!btn) return;
+      for (const b of seg.querySelectorAll('button')) b.classList.toggle('active', b === btn);
+      onPick(btn);
+    });
+  }
+
+  bindSeg('brushSeg', (b) => (editor.brushRadius = Number(b.dataset.radius)));
+  bindSeg('channelSeg', (b) => (editor.scoreChannel = b.dataset.channel as 'walk' | 'polygon'));
+  bindSeg('penWidthSeg', (b) => (editor.penWidth = Number(b.dataset.width)));
+
+  const scoreInput = $<HTMLInputElement>('scoreValue');
+  scoreInput.addEventListener('input', () => {
+    const v = Number(scoreInput.value);
+    if (Number.isFinite(v)) editor.scoreValue = v;
+  });
+  for (const chip of document.querySelectorAll<HTMLButtonElement>('[data-score]')) {
+    chip.addEventListener('click', () => {
+      scoreInput.value = chip.dataset.score!;
+      editor.scoreValue = Number(chip.dataset.score);
+    });
+  }
+
+  const penColorInput = $<HTMLInputElement>('penColor');
+  for (const sw of document.querySelectorAll<HTMLButtonElement>('[data-pen-color]')) {
+    sw.addEventListener('click', () => {
+      editor.penColor = sw.dataset.penColor!;
+      penColorInput.value = sw.dataset.penColor!;
+    });
+  }
+  penColorInput.addEventListener('input', () => (editor.penColor = penColorInput.value));
+
+  // ---------- View options ----------
+
+  $('viewFill').addEventListener('change', (e) => editor.setView({ fill: (e.target as HTMLSelectElement).value as any }));
+  $('viewLabels').addEventListener('change', (e) => editor.setView({ labels: (e.target as HTMLSelectElement).value as any }));
+  $('viewMarkup').addEventListener('change', (e) => editor.setView({ showMarkup: (e.target as HTMLInputElement).checked }));
+  $('viewGrid').addEventListener('change', (e) => editor.setView({ showGrid: (e.target as HTMLInputElement).checked }));
+  $('viewIndices').addEventListener('change', (e) => editor.setView({ showIndices: (e.target as HTMLInputElement).checked }));
+
+  $('zoomIn').addEventListener('click', () => editor.zoomBy(1.25));
+  $('zoomOut').addEventListener('click', () => editor.zoomBy(0.8));
+  $('zoomFit').addEventListener('click', () => editor.fitView());
+  undoBtn.addEventListener('click', () => editor.undo());
+  redoBtn.addEventListener('click', () => editor.redo());
+
+  // ---------- Notes dialog ----------
+
+  let noteTarget: { index: number | null; x: number; y: number } = { index: null, x: 0, y: 0 };
+  let noteColor = '#ffe066';
+
+  function pickNoteColor(color: string) {
+    noteColor = color;
+    for (const b of document.querySelectorAll<HTMLButtonElement>('[data-note-color]')) b.classList.toggle('active', b.dataset.noteColor === color);
+  }
+  for (const b of document.querySelectorAll<HTMLButtonElement>('[data-note-color]')) b.addEventListener('click', () => pickNoteColor(b.dataset.noteColor!));
+
+  function openNoteDialog(index: number | null, x: number, y: number) {
+    noteTarget = { index, x, y };
+    const existing = index !== null ? editor.map.notes[index] : null;
+    $('noteTitle').textContent = existing ? 'Edit note' : 'New note';
+    noteText.value = existing?.text ?? '';
+    pickNoteColor(existing?.color ?? noteColor);
+    $('noteDelete').hidden = !existing;
+    noteDialog.showModal();
+    noteText.focus();
+  }
+
+  $('noteSave').addEventListener('click', (e) => {
+    e.preventDefault();
+    const text = noteText.value.trim();
+    const { index, x, y } = noteTarget;
+    editor.edit((m) => {
+      if (index === null) {
+        if (!text) return false;
+        m.notes.push({ x, y, text, color: noteColor });
+      } else if (!text) {
+        m.notes.splice(index, 1);
+      } else {
+        m.notes[index] = { ...m.notes[index], text, color: noteColor };
+      }
+    });
+    noteDialog.close();
+  });
+  $('noteDelete').addEventListener('click', () => {
+    const { index } = noteTarget;
+    if (index !== null) editor.edit((m) => void m.notes.splice(index, 1));
+    noteDialog.close();
+  });
+  $('noteCancel').addEventListener('click', () => noteDialog.close());
+
+  // ---------- Keyboard shortcuts ----------
+
+  const toolKeys: Record<string, Tool> = { v: 'select', b: 'paint', g: 'fill', s: 'score', p: 'pen', e: 'erase', n: 'note', h: 'pan' };
+
+  window.addEventListener('keydown', (e) => {
+    const t = e.target as HTMLElement;
+    if (noteDialog.open || t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT') return;
+    const key = e.key.toLowerCase();
+    if ((e.ctrlKey || e.metaKey) && key === 'z') {
+      e.preventDefault();
+      e.shiftKey ? editor.redo() : editor.undo();
+    } else if ((e.ctrlKey || e.metaKey) && key === 'y') {
+      e.preventDefault();
+      editor.redo();
+    } else if (e.ctrlKey || e.metaKey || e.altKey) {
+      return;
+    } else if (toolKeys[key]) {
+      setTool(toolKeys[key]);
+    } else if (key === '0') {
+      editor.fitView();
+    } else if (/^[1-9]$/.test(key) && Number(key) <= editor.map.palette.length) {
+      selectTerrain(Number(key) - 1);
+    } else if (key === '[' || key === ']') {
+      const seg = $('brushSeg');
+      const radius = Math.max(0, Math.min(3, editor.brushRadius + (key === ']' ? 1 : -1)));
+      seg.querySelector<HTMLButtonElement>(`[data-radius="${radius}"]`)?.click();
+    }
+  });
+
+  // ---------- Access ----------
+
+  function applyAccess() {
+    editor.setReadOnly(!isEditor);
+    for (const el of document.querySelectorAll<HTMLInputElement | HTMLButtonElement>('[data-edit]')) el.disabled = !isEditor;
+    for (const b of toolButtons) b.disabled = !isEditor && editTools.includes(b.dataset.tool as Tool);
+    if (!isEditor && editTools.includes(editor.tool)) setTool('select');
+    undoBtn.disabled = !isEditor || !editor.canUndo;
+    redoBtn.disabled = !isEditor || !editor.canRedo;
+    renderPalette(true);
+    renderInspector();
+    refreshAccessBanner();
+  }
+
+  // ---------- Boot ----------
+
+  async function boot() {
+    let initial: { map: HexMap; revision: number } | null = null;
+    if (devLocal) {
+      initial = { map: createMap('Dev local map', 24, 24), revision: 0 };
+    } else if (!mapRef) {
+      loadingEl.textContent = 'No map selected.';
+      return;
+    } else {
+      try {
+        initial = await fetchMap();
+      } catch (err) {
+        console.error('Failed to load map:', err);
+        loadingEl.textContent = 'Failed to load the map. Please try again later.';
+        return;
+      }
+      if (!initial) {
+        loadingEl.textContent = 'This map does not exist (it may have been deleted).';
+        return;
+      }
+    }
+    loadingEl.hidden = true;
+    loadedRevision = initial.revision;
+
+    editor = new HexMapEditor($<HTMLCanvasElement>('canvas'), initial.map, {
+      onChange: () => {
+        syncMapFields();
+        markDirty();
+      },
+      onSelect: () => renderInspector(),
+      onHover: (i) => (hoverInfoEl.textContent = describeCell(i)),
+      onNoteRequest: (index, x, y) => openNoteDialog(index, x, y),
+      onHistoryChange: (canUndo, canRedo) => {
+        undoBtn.disabled = !isEditor || !canUndo;
+        redoBtn.disabled = !isEditor || !canRedo;
+      },
+    });
+
+    syncMapFields();
+    setSaveStatus(devLocal ? '' : 'Saved');
+    isEditor = devLocal;
+    applyAccess();
+    setTool(isEditor ? 'paint' : 'select');
+
+    if (devLocal) {
+      renderAuthControl($('auth'), { user: null, isEditor: false });
+      (window as any).__hexEditor = editor; // for poking at state from devtools
+      return;
+    }
+    watchEditorStatus((status) => {
+      renderAuthControl($('auth'), status);
+      const wasEditor = isEditor;
+      isEditor = status.isEditor;
+      if (saveBlocked === 'denied' && isEditor) saveBlocked = null;
+      applyAccess();
+      if (!wasEditor && isEditor && editor.tool === 'select') setTool('paint');
+      if (isEditor && dirty) save();
+    });
+  }
+
+  boot();
+</script>
+
+<style>
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .app {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 1rem;
+    border-bottom: 1px solid #222a38;
+    background: #0d1117;
+    min-width: 0;
+  }
+
+  .back {
+    color: #c0c8d8;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .back:hover {
+    color: #fff;
+  }
+
+  .name-input {
+    font-weight: 700;
+    font-size: 1rem;
+    width: 18rem;
+    max-width: 40vw;
+    background: transparent;
+    border-color: transparent;
+  }
+
+  .name-input:hover:not(:disabled),
+  .name-input:focus {
+    border-color: #30384a;
+    background: #0d1117;
+  }
+
+  .name-input:disabled {
+    opacity: 1;
+  }
+
+  .muted {
+    color: #8b95a7;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .save-status {
+    font-size: 0.8rem;
+    color: #4ade80;
+    white-space: nowrap;
+  }
+
+  .save-status[data-tone='busy'] {
+    color: #8b95a7;
+  }
+
+  .save-status[data-tone='warn'] {
+    color: #f59e0b;
+  }
+
+  .save-status[data-tone='error'] {
+    color: #f87171;
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  .banner {
+    margin: 0.5rem 1rem 0;
+  }
+
+  .body {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 4.25rem minmax(0, 1fr) 19rem;
+  }
+
+  .tools {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 0.4rem;
+    border-right: 1px solid #222a38;
+    overflow-y: auto;
+  }
+
+  .tool {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.5rem 0.2rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #c0c8d8;
+    font: 500 0.68rem 'Inter', sans-serif;
+    cursor: pointer;
+  }
+
+  .tool:hover:not(:disabled) {
+    background: #1c2230;
+    color: #fff;
+  }
+
+  .tool.active {
+    background: #2a1f4a;
+    border-color: #7c3aed;
+    color: #fff;
+  }
+
+  .tool:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .stage {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  #canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+  }
+
+  .loading {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #c0c8d8;
+  }
+
+  .loading[hidden] {
+    display: none;
+  }
+
+  .zoom {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .zoom .hm-btn {
+    background: rgba(13, 17, 23, 0.85);
+    min-width: 2.2rem;
+  }
+
+  .hover-info {
+    position: absolute;
+    left: 0.75rem;
+    bottom: 0.9rem;
+    right: 10rem;
+    color: #c0c8d8;
+    font-size: 0.78rem;
+    pointer-events: none;
+    text-shadow: 0 1px 2px #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .sidebar {
+    border-left: 1px solid #222a38;
+    overflow-y: auto;
+    padding: 0.5rem 0 2rem;
+  }
+
+  .panel {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #1a2130;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .panel[hidden] {
+    display: none;
+  }
+
+  .panel h2 {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #8b95a7;
+    margin: 0;
+    font-weight: 700;
+  }
+
+  :global(.hint) {
+    color: #8b95a7;
+    font-size: 0.8rem;
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  :global(.field) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.78rem;
+    color: #8b95a7;
+    min-width: 0;
+  }
+
+  .check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #c0c8d8;
+  }
+
+  :global(.size-row) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+  }
+
+  .seg {
+    display: flex;
+    border: 1px solid #30384a;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .seg button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-right: 1px solid #30384a;
+    color: #c0c8d8;
+    padding: 0.4rem 0.3rem;
+    font: 500 0.78rem 'Inter', sans-serif;
+    cursor: pointer;
+  }
+
+  .seg button:last-child {
+    border-right: none;
+  }
+
+  .seg button.active {
+    background: #7c3aed;
+    color: #fff;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .chips button {
+    background: #1c2230;
+    border: 1px solid #30384a;
+    color: #fff;
+    border-radius: 5px;
+    padding: 0.25rem 0.5rem;
+    font: 600 0.78rem 'Inter', sans-serif;
+    cursor: pointer;
+    min-width: 2.2rem;
+  }
+
+  .chips button:hover {
+    border-color: #7c3aed;
+  }
+
+  .swatches button {
+    width: 1.7rem;
+    height: 1.7rem;
+    min-width: 0;
+    padding: 0;
+    border-radius: 50%;
+    border: 2px solid #30384a;
+  }
+
+  .swatches button.active {
+    border-color: #fff;
+  }
+
+  .swatches input[type='color'] {
+    width: 1.9rem;
+    height: 1.9rem;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  .palette {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  :global(.terrain) {
+    display: grid;
+    grid-template-columns: 1.6rem 1.4rem minmax(0, 1fr) auto 1.4rem;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.2rem 0.3rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+  }
+
+  :global(.terrain.active) {
+    border-color: #7c3aed;
+    background: #1a1530;
+  }
+
+  :global(.terrain-pick) {
+    width: 1.6rem;
+    height: 1.6rem;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    clip-path: polygon(25% 6%, 75% 6%, 100% 50%, 75% 94%, 25% 94%, 0 50%);
+    cursor: pointer;
+  }
+
+  :global(.terrain input[type='color']) {
+    width: 1.4rem;
+    height: 1.4rem;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  :global(.terrain-name) {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.82rem;
+  }
+
+  :global(.terrain-count) {
+    color: #6b7588;
+    font-size: 0.72rem;
+    min-width: 1.5rem;
+    text-align: right;
+  }
+
+  :global(.terrain-del) {
+    background: none;
+    border: none;
+    color: #6b7588;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  :global(.terrain-del:hover:not(:disabled)) {
+    color: #f87171;
+  }
+
+  :global(.terrain-del:disabled) {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .add-terrain {
+    align-self: flex-start;
+  }
+
+  :global(.inspector-id) {
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  #inspector {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .note-dialog {
+    background: #131923;
+    color: #fff;
+    border: 1px solid #30384a;
+    border-radius: 10px;
+    padding: 1.25rem;
+    width: min(26rem, calc(100vw - 2rem));
+  }
+
+  .note-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  .note-dialog form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .note-dialog h2 {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .note-dialog textarea {
+    resize: vertical;
+    font-size: 0.9rem;
+  }
+
+  .dialog-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .dialog-actions [hidden] {
+    display: none;
+  }
+
+  @media (max-width: 860px) {
+    .topbar {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .name-input {
+      max-width: none;
+      flex: 1 1 8rem;
+      width: auto;
+    }
+
+    .muted {
+      display: none;
+    }
+
+    .body {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto minmax(0, 1fr) 38%;
+    }
+
+    .tools {
+      flex-direction: row;
+      border-right: none;
+      border-bottom: 1px solid #222a38;
+      overflow-x: auto;
+      padding: 0.35rem;
+    }
+
+    .tool {
+      min-width: 3.4rem;
+    }
+
+    .sidebar {
+      border-left: none;
+      border-top: 1px solid #222a38;
+    }
+
+    .hover-info {
+      display: none;
+    }
+  }
+</style>
