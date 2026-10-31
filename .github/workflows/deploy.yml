@@ -3,12 +3,18 @@ name: Build and Deploy
 on:
   push:
     branches: [ master ]
+  # Sent by the ClauseBuilder repo's workflow whenever its main branch changes.
+  repository_dispatch:
+    types: [ clausebuilder-updated ]
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      HAS_CLAUSEBUILDER_TOKEN: ${{ secrets.CLAUSEBUILDER_TOKEN != '' }}
 
     steps:
       - name: Checkout source
@@ -34,6 +40,31 @@ jobs:
           PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
           PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
           PUBLIC_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+
+      # ClauseBuilder lives in its own private repo and is served from /ClauseBuilder/.
+      - name: Warn if ClauseBuilder token is missing
+        if: env.HAS_CLAUSEBUILDER_TOKEN != 'true'
+        run: echo "::warning::CLAUSEBUILDER_TOKEN secret is not set; /ClauseBuilder/ will not be deployed."
+
+      - name: Checkout ClauseBuilder
+        if: env.HAS_CLAUSEBUILDER_TOKEN == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: Poonwahj/ClauseBuilder
+          ref: main
+          token: ${{ secrets.CLAUSEBUILDER_TOKEN }}
+          path: clausebuilder
+
+      - name: Build ClauseBuilder
+        if: env.HAS_CLAUSEBUILDER_TOKEN == 'true'
+        working-directory: clausebuilder
+        env:
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.CLAUSEBUILDER_GOOGLE_CLIENT_ID }}
+          VITE_MS_CLIENT_ID: ${{ secrets.CLAUSEBUILDER_MS_CLIENT_ID }}
+        run: |
+          npm ci
+          npm run build
+          cp -r dist "$GITHUB_WORKSPACE/site/dist/ClauseBuilder"
 
       - name: Push build output to deploy branch
         env:
