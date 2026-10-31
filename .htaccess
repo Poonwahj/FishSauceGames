@@ -5,3 +5,6 @@ RewriteBase /
 
 # Let the CountTrackula PWA handle its own paths
 RewriteRule ^CountTrackula/App - [L]
+
+# ClauseBuilder is served from /ClauseBuilder/; send lowercase links there
+RewriteRule ^clausebuilder(/.*)?$ /ClauseBuilder$1 [R=301,L]
