@@ -3,9 +3,9 @@ name: Build and Deploy
 on:
   push:
     branches: [ master ]
-  # Sent by the ClauseBuilder repo's workflow whenever its main branch changes.
+  # Sent by the ClauseBuilder / PDFWizardo repos' workflows whenever their main branch changes.
   repository_dispatch:
-    types: [ clausebuilder-updated ]
+    types: [ clausebuilder-updated, pdfwizardo-updated ]
   workflow_dispatch:
 
 jobs:
@@ -15,6 +15,7 @@ jobs:
       contents: write
     env:
       HAS_CLAUSEBUILDER_TOKEN: ${{ secrets.CLAUSEBUILDER_TOKEN != '' }}
+      HAS_PDFWIZARDO_TOKEN: ${{ secrets.PDFWIZARDO_TOKEN != '' }}
 
     steps:
       - name: Checkout source
@@ -65,6 +66,31 @@ jobs:
           npm ci
           npm run build
           cp -r dist "$GITHUB_WORKSPACE/site/dist/ClauseBuilder"
+
+      # PDFWizardo lives in its own private repo and is served from /PDFWizardo/.
+      - name: Warn if PDFWizardo token is missing
+        if: env.HAS_PDFWIZARDO_TOKEN != 'true'
+        run: echo "::warning::PDFWIZARDO_TOKEN secret is not set; /PDFWizardo/ will not be deployed."
+
+      - name: Checkout PDFWizardo
+        if: env.HAS_PDFWIZARDO_TOKEN == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: Poonwahj/PDFWizardo
+          ref: main
+          token: ${{ secrets.PDFWIZARDO_TOKEN }}
+          path: pdfwizardo
+
+      - name: Build PDFWizardo
+        if: env.HAS_PDFWIZARDO_TOKEN == 'true'
+        working-directory: pdfwizardo
+        env:
+          VITE_MS_CLIENT_ID: ${{ secrets.PDFWIZARDO_MS_CLIENT_ID }}
+          VITE_MS_TENANT_ID: ${{ secrets.PDFWIZARDO_MS_TENANT_ID }}
+        run: |
+          npm ci
+          npm run build
+          cp -r dist "$GITHUB_WORKSPACE/site/dist/PDFWizardo"
 
       - name: Push build output to deploy branch
         env:
