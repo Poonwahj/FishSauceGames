@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDFWizardo Guide</title>
+    <meta name="description" content="How to use PDFWizardo and set up a Word template with fields and calculations." />
+    <style>:root{--bg:#f4f5f7;--surface:#fff;--surface-2:#f8f9fb;--border:#dde0e6;--text:#1d2330;--muted:#667085;--accent:#2f6fdb;--accent-hover:#2459b8;--accent-soft:#e8f0fd;--accent-text:#fff;--shadow:0 1px 2px #1018280f, 0 1px 3px #10182814;--radius:10px;--lightningcss-light:initial;--lightningcss-dark: ;color-scheme:light;color:var(--text);background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;font-size:16px;line-height:1.6}@media (prefers-color-scheme:dark){:root{--bg:#14171c;--surface:#1c2027;--surface-2:#232831;--border:#2f3540;--text:#e6e9ef;--muted:#98a1b0;--accent:#5b92f0;--accent-hover:#79a7f4;--accent-soft:#1f2d45;--accent-text:#0e1420;--shadow:0 1px 2px #0006;--lightningcss-light: ;--lightningcss-dark:initial;color-scheme:dark}}*,:before,:after{box-sizing:border-box}body{background:var(--bg);margin:0}a{color:var(--accent)}a:hover{color:var(--accent-hover)}.topbar{background:var(--surface);border-bottom:1px solid var(--border);justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;display:flex}.brand{color:var(--text);align-items:center;gap:8px;font-weight:650;text-decoration:none;display:flex}.btn{background:var(--accent);color:var(--accent-text);border-radius:8px;padding:6px 14px;font-size:14px;font-weight:550;text-decoration:none;display:inline-block}.btn:hover{background:var(--accent-hover);color:var(--accent-text)}main{max-width:780px;margin:0 auto;padding:32px 16px 64px}h1{letter-spacing:-.01em;margin:0 0 8px;font-size:2rem;line-height:1.2}.lede{color:var(--muted);margin:0 0 24px;font-size:1.1rem}nav.toc{flex-wrap:wrap;gap:6px 16px;margin:0 0 32px;font-size:14px;display:flex}section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);margin:0 0 20px;padding:20px 24px}h2{margin:0 0 12px;scroll-margin-top:16px;font-size:1.3rem}h3{text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:20px 0 8px;font-size:.8rem}p{margin:0 0 12px}ul,ol{margin:0 0 12px;padding-left:22px}li{margin:4px 0}code{background:var(--surface-2);border:1px solid var(--border);border-radius:4px;padding:0 4px;font-family:ui-monospace,Cascadia Mono,Consolas,monospace;font-size:.9em}pre{background:var(--surface-2);border:1px solid var(--border);white-space:pre;border-radius:8px;margin:0 0 12px;padding:14px 16px;font-family:ui-monospace,Cascadia Mono,Consolas,monospace;font-size:14px;line-height:1.55;overflow-x:auto}.doc{white-space:pre-wrap;font-family:Calibri,Segoe UI,system-ui,sans-serif;font-size:15px}.table-wrap{margin:0 0 12px;overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:15px}th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--border);padding:8px 10px}th{color:var(--muted);font-size:13px;font-weight:600}td:first-child,td code{white-space:nowrap}.note{background:var(--accent-soft);border-radius:8px;margin:0 0 12px;padding:12px 14px}footer{text-align:center;color:var(--muted);font-size:14px}@media (width<=560px){section{padding:16px}h1{font-size:1.6rem}td:first-child{white-space:normal;width:34%}td code{white-space:normal;overflow-wrap:anywhere}}@media print{.topbar,nav.toc,footer{display:none}section{box-shadow:none;break-inside:avoid}}</style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./">
+        <img src="./favicon.svg" alt="" width="22" height="22" />
+        PDFWizardo
+      </a>
+      <a class="btn" href="./">Open PDFWizardo</a>
+    </header>
+
+    <main>
+      <h1>PDFWizardo guide</h1>
+      <p class="lede">
+        PDFWizardo fills in a Word template, does the calculations for you, and saves a finished PDF. This guide covers
+        using it day to day and setting up your own templates.
+      </p>
+
+      <nav class="toc" aria-label="Contents">
+        <a href="#using">Using PDFWizardo</a>
+        <a href="#tags">Step 1: Tags</a>
+        <a href="#fields">Step 2: Fields and calculations</a>
+        <a href="#example">A complete example</a>
+        <a href="#options">Options</a>
+        <a href="#formulas">Formulas</a>
+        <a href="#good-to-know">Good to know</a>
+      </nav>
+
+      <section id="using">
+        <h2>Using PDFWizardo</h2>
+        <ol>
+          <li><b>Sign in</b> with your work Microsoft 365 account and pick the OneDrive folder that holds your templates (Word <code>.docx</code> files).</li>
+          <li><b>Choose a template.</b> PDFWizardo reads it and builds a form from its tags.</li>
+          <li><b>Type who the copy is for</b> at the top of the form, then fill in the blanks. Calculated values update as you type.</li>
+          <li><b>Create copy.</b> The finished PDF (and, if you tick the box, a Word copy) is saved to a <code>Generated</code> folder inside your templates folder.</li>
+        </ol>
+        <p>
+          Not signed in? You can still <b>open a .docx from this computer</b> to try a template. You get the filled-in
+          Word file as a download.
+        </p>
+      </section>
+
+      <section id="tags">
+        <h2>Step 1: Put tags in the document</h2>
+        <p>
+          Type <code>@</code> and a name wherever a value should appear. Use the same tag as often as you like: every
+          copy of it gets the same value. Tags in headers and footers work too.
+        </p>
+        <ul>
+          <li><code>@ClientName</code>: letters, numbers and <code>_</code> only, with no spaces.</li>
+          <li><code>@clientname</code> is the same field. Capital letters don't matter.</li>
+          <li>Email addresses such as <code>name@example.com</code> are left alone.</li>
+        </ul>
+        <p>
+          That's all a simple document needs. Each tag becomes a box on the form, labelled from its name, so
+          <code>@ClientName</code> asks for "Client Name".
+        </p>
+      </section>
+
+      <section id="fields">
+        <h2>Step 2: Describe the fields and add calculations <span style="font-weight: 400; color: var(--muted)">(optional)</span></h2>
+        <p>
+          On the last page, type a line that says <b>PDFWizardo Fields</b>, then one field per line. This section is
+          removed from every copy, so it never reaches the client.
+        </p>
+        <ul>
+          <li><code>@Name : question</code> is something you fill in. The question is shown on the form.</li>
+          <li><code>@Name = formula</code> is calculated for you and never asked.</li>
+          <li>Options go in <code>[square brackets]</code> at the end of the line, separated by commas.</li>
+          <li>Lines that don't start with <code>@</code> are ignored, so you can leave notes for yourself.</li>
+        </ul>
+      </section>
+
+      <section id="example">
+        <h2>A complete example</h2>
+        <h3>In the document</h3>
+        <pre class="doc">This agreement begins on @StartDate and ends on @EndDate.
+@ClientName agrees to pay @MonthlyFee per month for @Months months.
+
+Net total: @NetTotal
+Tax at @TaxRate: @Tax
+Total due: @GrandTotal (@TotalInWords)
+Deposit due on signing: @Deposit</pre>
+
+        <h3>On the last page, after a page break</h3>
+        <pre>PDFWizardo Fields
+@ClientName   : Client's full legal name
+@StartDate    : Start date [date, default today]
+@Months       : Length in months [number, default 12]
+@MonthlyFee   : Monthly fee before tax [currency]
+@Discount     : One-time discount [currency, optional]
+@TaxRate      : Sales tax rate [percent, default 13]
+
+Everything below is calculated.
+@NetTotal     = @MonthlyFee * @Months - @Discount [currency]
+@Tax          = round(@NetTotal * @TaxRate, 2) [currency]
+@GrandTotal   = @NetTotal + @Tax [currency]
+@Deposit      = max(500, round(@GrandTotal * 20%, 2)) [currency]
+@EndDate      = addMonths(@StartDate, @Months) - 1
+@TotalInWords = moneyWords(@GrandTotal)</pre>
+        <p>
+          The form asks for the six fields marked with <code>:</code> and works out the rest as you type. A fee of
+          $2,500 for 12 months at 13% tax gives a total due of $33,900.00 and a deposit of $6,780.00. The copy says
+          "Total due: $33,900.00 (Thirty-Three Thousand Nine Hundred and 00/100)".
+        </p>
+      </section>
+
+      <section id="options">
+        <h2>Options</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Write</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td><code>text</code></td><td>Plain text. This is the default.</td></tr>
+              <tr><td><code>number</code></td><td>A number, shown as 1,234.5</td></tr>
+              <tr><td><code>currency</code></td><td>Money, shown as $1,234.56</td></tr>
+              <tr><td><code>percent</code></td><td>Type 13 for 13%. Shown as 13%</td></tr>
+              <tr><td><code>date</code></td><td>A date picker, shown as March 3, 2027</td></tr>
+              <tr><td><code>default 12</code></td><td>A starting value. Use <code>default today</code> for dates</td></tr>
+              <tr><td><code>optional</code></td><td>Can be left blank. Blank numbers count as 0</td></tr>
+              <tr><td><code>multiline</code></td><td>A bigger box, e.g. for an address</td></tr>
+              <tr><td><code>decimals 0</code></td><td>How many decimal places to show</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="formulas">
+        <h2>Formulas</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>To get</th><th>Write</th></tr></thead>
+            <tbody>
+              <tr><td>Maths</td><td><code>+ - * / ^ ( )</code></td></tr>
+              <tr><td>A percentage</td><td><code>@Total * 20%</code> or <code>@Total * @TaxRate</code></td></tr>
+              <tr><td>Rounding</td><td><code>round(x, 2)</code> <code>roundup(x, 2)</code> <code>rounddown(x, 2)</code></td></tr>
+              <tr><td>Biggest, smallest, totals</td><td><code>max(a, b)</code> <code>min(a, b)</code> <code>sum(a, b, c)</code> <code>average(a, b)</code></td></tr>
+              <tr><td>A choice</td><td><code>if(@Months &gt;= 24, 0.1, 0)</code></td></tr>
+              <tr><td>Comparisons</td><td><code>=</code> <code>&lt;&gt;</code> <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code> with <code>and()</code> <code>or()</code> <code>not()</code></td></tr>
+              <tr><td>Dates</td><td><code>addDays(@Start, 30)</code> <code>addMonths(@Start, 12)</code> <code>addYears(@Start, 1)</code> or <code>@Start + 30</code></td></tr>
+              <tr><td>Days between two dates</td><td><code>daysBetween(@Start, @End)</code></td></tr>
+              <tr><td>Today's date</td><td><code>today()</code></td></tr>
+              <tr><td>Joined text</td><td><code>"Net " &amp; currency(@Net)</code></td></tr>
+              <tr><td>An amount in words</td><td><code>moneyWords(1250)</code> gives One Thousand Two Hundred Fifty and 00/100</td></tr>
+              <tr><td>A number in words</td><td><code>words(12)</code> gives twelve</td></tr>
+              <tr><td>Capitals</td><td><code>upper(@Name)</code> <code>lower(@Name)</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="good-to-know">
+        <h2>Good to know</h2>
+        <ul>
+          <li>Start <b>PDFWizardo Fields</b> on a new page (Ctrl+Enter in Word). The page break before it is removed too.</li>
+          <li>Fields can be listed in any order, and formulas can use other formulas.</li>
+          <li>Word's autocorrect is fine. Curly quotes, long dashes and × are understood.</li>
+          <li>If a line has a mistake, PDFWizardo says what's wrong at the top of the form.</li>
+          <li>The template itself is never changed. Copies go into a <code>Generated</code> folder inside the templates folder. The file name is filled in for you from who the copy is for and today's date, and you can change it before saving.</li>
+          <li>Keep this guide out of the templates folder, or PDFWizardo will list it as a template.</li>
+        </ul>
+      </section>
+
+      <footer>
+        <a href="./">Back to PDFWizardo</a>
+      </footer>
+    </main>
+  </body>
+</html>
