@@ -37,7 +37,7 @@
       <section id="using">
         <h2>Using PDFWizardo</h2>
         <ol>
-          <li><b>Sign in</b> with your work Microsoft 365 account and pick the OneDrive folder that holds your templates (Word <code>.docx</code> files).</li>
+          <li><b>Sign in</b> with your work Microsoft 365 account and pick the OneDrive folder that holds your templates (Word <code>.docx</code> files). If someone shared the folder with you, see <a href="#shared-folders">Using a shared folder</a> below.</li>
           <li><b>Choose a template.</b> PDFWizardo reads it and builds a form from its tags.</li>
           <li><b>Type who the copy is for</b> at the top of the form, then fill in the blanks. Calculated values update as you type.</li>
           <li><b>Create copy.</b> The finished PDF (and, if you tick the box, a Word copy) is saved to a <code>Generated</code> folder inside your templates folder.</li>
@@ -45,6 +45,23 @@
         <p>
           Not signed in? You can still <b>open a .docx from this computer</b> to try a template. You get the filled-in
           Word file as a download.
+        </p>
+        <h3 id="shared-folders">Using a shared folder</h3>
+        <p>The templates can live in a folder a colleague has shared with you. There are two ways to choose it:</p>
+        <ul>
+          <li>
+            <b>Add a shortcut (best).</b> In OneDrive, open <b>Shared</b>, find the folder and choose
+            <b>Add shortcut to My files</b>. In PDFWizardo, click <b>change folder</b>: the folder is in the list, marked
+            <i>shared</i>.
+          </li>
+          <li>
+            <b>Paste its link.</b> In the folder picker, open <b>Looking for a folder someone shared with you?</b> and
+            paste the folder's sharing link, or its address from the browser while you're looking at it in OneDrive.
+          </li>
+        </ul>
+        <p>
+          You need <b>edit</b> access to the folder, because the finished copies are saved in a <code>Generated</code>
+          folder inside it. With view-only access, PDFWizardo can read the templates but saving fails.
         </p>
       </section>
 
